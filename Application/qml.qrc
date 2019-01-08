@@ -22,5 +22,8 @@
         <file>Views/TopBar.qml</file>
         <file>Files/eventindicator.png</file>
         <file>Views/BaseText.qml</file>
+        <file>MainPage.qml</file>
+        <file>ShortListLessons.qml</file>
+        <file>Helpers/CustomCalendar.qml</file>
     </qresource>
 </RCC>

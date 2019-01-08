@@ -209,12 +209,12 @@ void Lesson::ClearLessonVisits()
 }
 
 //---------------------------------------------------------------------------------
-
+//Получаем список занятий на дату
+//Открываем запрос и переводим его в Лист. Насколько это долго
 QList<QObject *> LessonModel::lessonsList(const QDate &date)
 {
     QSqlQuery query;
     QDate nextDay = date.addDays(1);
-    //QString sqlDateFormat = "dd.MM.yyyy";
     query.prepare("SELECT * FROM " TABLE_LESSONS " WHERE " FIELD_DATE " >= :date and " FIELD_DATE " < :next");
     query.bindValue(":date", date.toString(sqlDateFormat));//Это можно заменить на стандартный формат, но если потребуется изменить, так будет проще
     query.bindValue(":next", nextDay.toString(sqlDateFormat));
@@ -226,8 +226,6 @@ QList<QObject *> LessonModel::lessonsList(const QDate &date)
     while(query.next()){
         Lesson* lesson = new Lesson(this);
         lesson->setID(query.value(FIELD_ID).toInt());
-        qDebug() << query.value(FIELD_DATE).toDateTime();
-        (query.value(FIELD_DATE).toString() >= date.toString("dd.MM.yyyy")) ? qDebug() << "true" : qDebug() << "false";
         lesson->setDate(query.value(FIELD_DATE).toDateTime());
         lesson->setSubject(query.value(FIELD_SUBJECT).toInt());
         lessons.append(lesson);
@@ -235,7 +233,7 @@ QList<QObject *> LessonModel::lessonsList(const QDate &date)
 
     return lessons;
 }
-
+//Получаем объект занятия по ID
 QObject* LessonModel::getLessonByID(const int id)
 {
     Lesson *tempLesson = new Lesson(id);
@@ -344,11 +342,9 @@ void LessonModel::remove(int row)
     }
 }
 
-void LessonModel::updateElement(const int row, const QString _date, const QString _subject, const double _long)
+void LessonModel::updateElement(const int id, const QString _date, const QString _subject, const double _long)
 {
-    int locID = getId(row);
-
-    Lesson temp(locID);
+    Lesson temp(id);
     temp.setDate(QDateTime::fromString(_date, "dd.MM.yyyy HH:mm"));
     temp.setSubject(_subject.toInt());
     temp.setLongs(_long);

@@ -19,6 +19,7 @@ class Lesson : public QObject
     Q_PROPERTY(int ID READ ID WRITE setID NOTIFY IDChanged)
     Q_PROPERTY(QDateTime date READ date WRITE setDate NOTIFY dateChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+
     //Q_PROPERTY(Subject* subject READ subject WRITE setSubject NOTIFY subjectChanged)
 public:
     explicit Lesson(QObject *parent = nullptr);
@@ -40,7 +41,8 @@ public:
 
     QString StringView();
 
-    void Save();
+    Q_INVOKABLE void Save();
+    //void Save();
     int getID() const;
 signals:
     void dateChanged();
@@ -92,7 +94,7 @@ public Q_SLOTS:
     void add(const QString _date, const QString _subject, const double _long);
     void remove(int row);
     //void setFilter(QString _filter);
-    void updateElement(const int row, const QString _date, const QString _subject, const double _long);
+    void updateElement(const int id, const QString _date, const QString _subject, const double _long);
     QAbstractTableModel* visitList(const int row);
     QString getStringView(const int row);
     QString getStringViewById(const int id);

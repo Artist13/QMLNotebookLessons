@@ -3,6 +3,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
+import "../Helpers"
 //import "MyTypes.Lesson"
 
 Dialog{
@@ -17,39 +18,68 @@ Dialog{
     property string nameBl: "Edit"
     property int targetIndex : -1
     property var targetObject;
+    property var locDate;
 
 
     function create(targetDate){
         isNew = true;
         nameBl = "Добавить занятие"
+        locDate = targetDate;
         LessonMapper.newData();
-        date.text = targetDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy");
+        date.text = locDate.toLocaleDateString(Qt.locale(), "dd.mm.yyyy hh:mm");
         date.visible = false;
+        dateLabel.visible = false;
         open()
     }
 
+    function editBylessonId(id){
+        targetIndex = id;
+        targetObject = LessonsModel.getLessonByID(id);
+        if(id == -1){
+            isNew = true;
+            nameBl = "New lesson"
+            locDate = new Date();
+            LessonMapper.newData();
+        }else{
+            isNew = false;
+            nameBl = "Edit lesson"
+            locDate = targetObject.date;
+
+//          targetObject = LessonsModel.getLessonByID(id);
+
+            //sdate.text = targetObject.date.toLocaleString(Qt.locale(), "dd.MM.yyyy hh:mm");
+            subjectName.text = SubjectsModel.getNameByID(subjectID.text);
+        }
+        date.text = locDate.toLocaleString(Qt.locale(), "dd.mm.yyyy hh:mm");
+        open()
+    }
+    //Изначально работа велась с моделью, в которой известен номер строки
+    //По  нему и происходила индексация объектов
+    //Он доступен в модели
+    //Для реализации работы с id и ухода от привязки к конкретной модели добавил новые методы и перебросил вызовы в них
     function editEntry(row)
     {
         targetIndex = row
         if(row === -1){
-            isNew = true;
-            nameBl = "New lesson"
-            LessonMapper.newData();
+            editBylessonId(-1);
             //visiters.openWithFilter(-1)
         }
         else{
-            isNew = false;
-            //console.log(targetIndex)
-            nameBl = "Edit lesson"
-            LessonMapper.updateData(row)
-            targetObject = LessonsModel.getLessonByRow(row);
-            date.text = targetObject.date.toLocaleString(Qt.locale(), "dd.MM.yyyy hh:MM");
-            //visiters.openWithFilter(LessonsModel.getId(row))
-            subjectName.text = SubjectsModel.getNameByID(subjectID.text);
+            editBylessonId(LessonsModel.getId(row));
+
+//            isNew = false;
+//            //console.log(targetIndex)
+//            nameBl = "Edit lesson"
+//            LessonMapper.updateData(row)
+//            targetObject = LessonsModel.getLessonByRow(row);
+//            date.text = targetObject.date.toLocaleString(Qt.locale(), "dd.MM.yyyy hh:MM");
+//            //visiters.openWithFilter(LessonsModel.getId(row))
+//            subjectName.text = SubjectsModel.getNameByID(subjectID.text);
         }
 
-        open()
+        //open()
     }
+
     contentItem: Rectangle{
         id: form
         implicitHeight: 220
@@ -60,7 +90,7 @@ Dialog{
         readonly property int fontSize: 16
         color: baseBGColor
 
-
+        property var tempDate: new Date();
         GridLayout{
             anchors.top: parent.top
             anchors.left: parent.left
@@ -73,9 +103,9 @@ Dialog{
             columns: 3
 
             BaseText {
+                id: dateLabel
                 text: qsTr("Дата")
                 Layout.fillWidth: true
-                visible: false
             }
 
 
@@ -83,11 +113,22 @@ Dialog{
                 id: date
                 Layout.columnSpan: 2
                 Layout.preferredWidth: 300
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        dialogCalendar.show(locDate)
+                    }
+                }
+            }
+//            Binding{
+//                target: targetObject
+//                property: 'date'
+//                value: date.text
+////                target: date
+////                property: "text"
+////                value: targetObject.date.toLocaleString(Qt.locale(), "dd.MM.yyyy hh:mm")
+//            }
 
-            }
-            Calendar{
-                visible: false
-            }
 
 
             BaseText {
@@ -100,6 +141,7 @@ Dialog{
                 visible: false
                 Layout.preferredWidth: 300
                 Layout.columnSpan: 2
+
             }
 
             TextField{
@@ -191,11 +233,12 @@ Dialog{
                     Layout.preferredWidth: 80
                     onClicked: {
                         //console.log("And error")
-                        if(targetIndex === -1){
+                        if(isNew){
                             save()
                         }else
                         {
-                            updateElement(targetIndex)
+                            //updateElement(targetIndex)
+                            simpleSave();
                         }
                         close()
                     }
@@ -227,6 +270,13 @@ Dialog{
         }
     }
     //Эта ветвь при добавлении нового элемента
+
+    function simpleSave(){
+        console.log(locDate);
+        targetObject.date = locDate;
+        targetObject.Save();
+    }
+
     function save()
     {
         console.log("save new lesson");
@@ -265,6 +315,102 @@ Dialog{
             var locSubjID = SubjectsModel.getId(locIndex);
             subjectID.text = locSubjID;
             subjectName.text = SubjectsModel.getNameByID(locSubjID);
+        }
+    }
+
+    Dialog{
+        id: dialogCalendar
+
+        width: 250
+        height: 300
+
+        contentItem: Rectangle{
+            id: dialogRect
+            color: "#f7f7f7"
+
+            CustomCalendar{
+                id: calendar
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: row.top
+            }
+
+            Row{
+                    id: row
+                    height: 48
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+
+                    Button{
+                        id: dialogButtonCancel
+
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+
+                        width: parent.width / 2 - 1
+
+                        style: ButtonStyle{
+                            background: Rectangle{
+                                color: control.pressed ? "#d7d7d7" : "#f7f7f7"
+                                border.width: 0
+                            }
+
+                            label: Text {
+                                text: qsTr("Cancel")
+                                font.pixelSize: 14
+                                color: "#34aadc"
+                                verticalAlignment: Text.AlignVCenter
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+                        }
+
+                        onClicked: dialogCalendar.close()
+
+                    }
+
+                    Rectangle{
+                        id: dividerVertical
+                        width: 2
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        color: "#d7d7d7"
+                    }
+
+                    Button{
+                        id: dialogButtonOk
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        width: parent.width / 2 - 1
+
+                        style: ButtonStyle{
+                            background: Rectangle{
+                                color: control.pressed ? "#d7d7d7" : "#f7f7f7"
+                                border.width: 0
+                            }
+
+                            label: Text {
+                                text: qsTr("Ok")
+                                font.pixelSize: 14
+                                color: "#34aadc"
+                                verticalAlignment: Text.AlignVCenter
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+                        }
+
+                        onClicked: {
+                            locDate = calendar.getDate()
+                            date.text = Qt.formatDate(locDate, "dd.MM.yyyy");
+                            dialogCalendar.close();
+                        }
+                    }
+                }
+
+        }
+        function show(x){
+            calendar.setDate(x)
+            dialogCalendar.open()
         }
     }
 }
