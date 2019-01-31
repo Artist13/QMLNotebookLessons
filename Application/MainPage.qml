@@ -198,7 +198,9 @@ Item{
                 running: true
                 onTriggered: {
                     //console.log("calendar update")
-                    //mainCalendar.update()
+                    //Костыль для обновления календаря
+                    mainCalendar.showNextMonth();
+                    mainCalendar.showPreviousMonth();
                     shortList.connectedModel = LessonsModel.lessonsList(shortList.connectedCalendar.selectedDate)//eventModel.eventsForDate(mainCalendar.selectedDate)
                 }
             }

@@ -23,7 +23,7 @@ Dialog{
         nameBl = "Добавить занятие"
         locDate = targetDate;
         LessonMapper.newData();
-        date.text = locDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy hh:mm");
+        date.text = locDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy");
         date.visible = false;
         dateLabel.visible = false;
         open()
