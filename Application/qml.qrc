@@ -25,5 +25,6 @@
         <file>MainPage.qml</file>
         <file>ShortListLessons.qml</file>
         <file>Helpers/CustomCalendar.qml</file>
+        <file>Helpers/TimePicker.qml</file>
     </qresource>
 </RCC>
