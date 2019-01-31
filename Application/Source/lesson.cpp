@@ -30,7 +30,7 @@ void Lesson::Init(const int &ID)
     _ID = ID;
     _date = query.value(FIELD_DATE).toDateTime();
     _longs = query.value(FIELD_LONG).toDouble();
-    _subj = new Subject(query.value(FIELD_SUBJECT).toInt());
+    _subj = Subject::getSubject(query.value(FIELD_SUBJECT).toInt());
     LoadStudents();
     //qDebug() << _ID << "|" << _date.toString() << "|" << _subj->getID();
 }
@@ -63,12 +63,12 @@ Subject *Lesson::subject()
     return _subj;
 }
 
-void Lesson::setSubject(const int &subjID)
+void Lesson::setSubject(Subject* &subj)
 {
     if(_subj != nullptr)
-        if (_subj->getID() == subjID)
+        if (_subj->ID() == subj->ID())
             return;
-    _subj = new Subject(subjID);
+    _subj = subj;
     emit subjectChanged();
 }
 
@@ -87,7 +87,11 @@ void Lesson::setLongs(const double &longs)
 
 QString Lesson::name() const
 {
-    return _subj->name();
+    if(_subj != nullptr){
+        return _subj->name();
+    }else{
+        return this->genDefaultName();
+    }
 }
 
 
@@ -96,8 +100,9 @@ QString Lesson::StringView()
     return _date.toString("dd.MM.yyyy") + " " + _subj->getFullName();
 }
 
-void Lesson::Save()
+void Lesson::save()
 {
+    //При сохранении с незаполненым полем Subject там объект с некорректными данными
     QSqlQuery query;
     if (_ID == -1)
     {
@@ -144,16 +149,14 @@ void Lesson::CreateNewRecord()
 
     query.prepare("INSERT INTO " TABLE_LESSONS " (" FIELD_DATE ", " FIELD_SUBJECT ", " FIELD_LONG ") VALUES (:date, :subject, :long)");
     query.bindValue(":date", _date);
-    //query.bindValue(":date", QDate().toString(Qt::DateFormat::LocalDate));
-    //qDebug() << QDate::currentDate().toString(Qt::DateFormat::LocalDate);
-
-    //query.bindValue(":date", "25.10.2018");
     if (_subj == nullptr)
     {
+        //Может отсутствовать предмет
         qDebug() << "subject = null";
-        return;
+        //return;
+    }else{
+        query.bindValue(":subject", _subj->getID());
     }
-    query.bindValue(":subject", _subj->getID());
     query.bindValue(":long", _longs);
     if(!query.exec())
     {
@@ -173,7 +176,14 @@ void Lesson::UpdateRecord()
     //QString tempDate = _date;
     //qDebug() << tempDate;
     query.bindValue(":date", _date);
-    query.bindValue(":subject", _subj->getID());
+    if (_subj == nullptr)
+    {
+        //Может отсутствовать предмет
+        qDebug() << "subject = null";
+        //return;
+    }else{
+        query.bindValue(":subject", _subj->getID());
+    }
     query.bindValue(":long", _longs);
     if(!query.exec())
     {
@@ -208,13 +218,18 @@ void Lesson::ClearLessonVisits()
     }
 }
 
+QString Lesson::genDefaultName() const
+{
+    return "Занятие " + _date.toString(Qt::DateFormat::SystemLocaleShortDate);
+}
+
 //---------------------------------------------------------------------------------
 //Получаем список занятий на дату
 //Открываем запрос и переводим его в Лист. Насколько это долго
 QList<QObject *> LessonModel::lessonsList(const QDate &date)
 {
     QSqlQuery query;
-    QDate nextDay = date.addDays(1);
+    QDate nextDay = date.addDays(1);//today + 1
     query.prepare("SELECT * FROM " TABLE_LESSONS " WHERE " FIELD_DATE " >= :date and " FIELD_DATE " < :next");
     query.bindValue(":date", date.toString(sqlDateFormat));//Это можно заменить на стандартный формат, но если потребуется изменить, так будет проще
     query.bindValue(":next", nextDay.toString(sqlDateFormat));
@@ -226,8 +241,18 @@ QList<QObject *> LessonModel::lessonsList(const QDate &date)
     while(query.next()){
         Lesson* lesson = new Lesson(this);
         lesson->setID(query.value(FIELD_ID).toInt());
-        lesson->setDate(query.value(FIELD_DATE).toDateTime());
-        lesson->setSubject(query.value(FIELD_SUBJECT).toInt());
+        QDateTime locDateTime = query.value(FIELD_DATE).toDateTime();
+        if(locDateTime.isValid())
+        {
+            lesson->setDate(locDateTime);
+        }
+        //Если предмет не указан, то возбуждается ошибка в sql запросе
+        //Это в целом некорректная ситуация. Но нужен корректный результат
+        qDebug() << "Subject in db: " << query.value(FIELD_SUBJECT).toInt();
+        if(int locSubjID = query.value(FIELD_SUBJECT).toInt() != 0){
+            Subject *locSubj = new Subject(locSubjID);
+            lesson->setSubject(locSubj);
+        }
         lessons.append(lesson);
     }
 
@@ -271,9 +296,10 @@ void LessonModel::addElement(QVariantList data)
 
     Lesson temp;
     temp.setDate(QDateTime::fromString(data[0].toString(), "dd.MM.yyyy"));
-    temp.setSubject(data[1].toInt());
+    Subject *locSubj = Subject::getSubject(data[1].toInt());
+    temp.setSubject(locSubj);
     temp.setLongs(data[2].toDouble());
-    temp.Save();
+    temp.save();
 }
 
 QHash<int, QByteArray> LessonModel::roleNames() const
@@ -346,9 +372,10 @@ void LessonModel::updateElement(const int id, const QString _date, const QString
 {
     Lesson temp(id);
     temp.setDate(QDateTime::fromString(_date, "dd.MM.yyyy HH:mm"));
-    temp.setSubject(_subject.toInt());
+    Subject *locSubj = new Subject(_subject.toInt());
+    temp.setSubject(locSubj);
     temp.setLongs(_long);
-    temp.Save();
+    temp.save();
 }
 
 QAbstractTableModel *LessonModel::visitList(const int row)

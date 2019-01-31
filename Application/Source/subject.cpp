@@ -17,10 +17,16 @@ Subject::Subject(const int &ID)
     query.exec();
     //Нужна проверка на уникальность записи
     query.first();
-    _ID = ID;
-    _Name = query.value(FIELD_NAME).toString();
-    _ClassNum = query.value(FIELD_SUBJCLASS).toInt();
-    //qDebug() << _ID << "|" << _Name << "|" << _ClassNum;
+    if(query.isValid()){
+        _ID = ID;
+        _Name = query.value(FIELD_NAME).toString();
+        _ClassNum = query.value(FIELD_SUBJCLASS).toInt();
+        //qDebug() << _ID << "|" << _Name << "|" << _ClassNum;
+    }else{
+        qDebug() << "Subject not found";
+        //return nullptr;
+    }
+
 }
 
 Subject::Subject(Subject &_other)
@@ -28,6 +34,27 @@ Subject::Subject(Subject &_other)
     _ID = _other.ID();
     _Name = _other.name();
     _ClassNum = _other.classNum();
+}
+
+Subject *Subject::getSubject(const int &ID)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM " TABLE_SUBJECTS " WHERE " FIELD_ID " = :ID");
+    query.bindValue(":ID", ID);
+    query.exec();
+    //Нужна проверка на уникальность записи
+    query.first();
+    if(query.isValid()){
+        Subject* locSubj = new Subject();
+        locSubj->setID(ID);
+        locSubj->setName(query.value(FIELD_NAME).toString());
+        locSubj->setClassNum(query.value(FIELD_SUBJCLASS).toInt());
+        return locSubj;
+        //qDebug() << _ID << "|" << _Name << "|" << _ClassNum;
+    }else{
+        qDebug() << "Subject not found";
+        return nullptr;
+    }
 }
 
 Subject Subject::operator=(Subject &_other)

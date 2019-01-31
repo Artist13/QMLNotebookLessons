@@ -20,7 +20,7 @@ class Lesson : public QObject
     Q_PROPERTY(QDateTime date READ date WRITE setDate NOTIFY dateChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
 
-    //Q_PROPERTY(Subject* subject READ subject WRITE setSubject NOTIFY subjectChanged)
+    Q_PROPERTY(Subject* subject READ subject WRITE setSubject NOTIFY subjectChanged)
 public:
     explicit Lesson(QObject *parent = nullptr);
     Lesson(const int &ID);
@@ -34,14 +34,14 @@ public:
     QDateTime date();
     void setDate(const QDateTime date);
     Subject* subject();
-    void setSubject(const int &subjID);
+    void setSubject(Subject *&subj);
     double longs();
     void setLongs(const double &longs);
     QString name() const;
 
     QString StringView();
 
-    Q_INVOKABLE void Save();
+    Q_INVOKABLE void save();
     //void Save();
     int getID() const;
 signals:
@@ -65,6 +65,7 @@ private:
     void UpdateRecord();
     void SaveVisits();
     void ClearLessonVisits();
+    QString genDefaultName() const;
 };
 
 class LessonModel : public QSqlQueryModel

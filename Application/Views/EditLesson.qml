@@ -12,26 +12,24 @@ Dialog{
     height: 440
     width: 480
 
-
-
     property bool isNew: false
     property string nameBl: "Edit"
     property int targetIndex : -1
     property var targetObject;
-    property var locDate;
-
+    property var locDate;//Дублирует данные из модели занятия //Пока не обрабатываются моменты когда объек = undefined
 
     function create(targetDate){
         isNew = true;
         nameBl = "Добавить занятие"
         locDate = targetDate;
         LessonMapper.newData();
-        date.text = locDate.toLocaleDateString(Qt.locale(), "dd.mm.yyyy hh:mm");
+        date.text = locDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy hh:mm");
         date.visible = false;
         dateLabel.visible = false;
         open()
     }
-
+    //Очищаются ли поля
+    //Нужно проработать mapper для использования с объектами, а не таблицами
     function editBylessonId(id){
         targetIndex = id;
         targetObject = LessonsModel.getLessonByID(id);
@@ -39,18 +37,20 @@ Dialog{
             isNew = true;
             nameBl = "New lesson"
             locDate = new Date();
+            subjectID.text = -1;
             LessonMapper.newData();
         }else{
             isNew = false;
             nameBl = "Edit lesson"
             locDate = targetObject.date;
-
-//          targetObject = LessonsModel.getLessonByID(id);
-
-            //sdate.text = targetObject.date.toLocaleString(Qt.locale(), "dd.MM.yyyy hh:mm");
-            subjectName.text = SubjectsModel.getNameByID(subjectID.text);
+            //Идет обращение к свойству
+            //subjectName.text = SubjectsModel.getNameByID(subjectID.text);
+            if(targetObject.subject !== null){
+                subjectID.text = targetObject.subject.ID;
+                subjectName.text = targetObject.subject.name;
+            }
         }
-        date.text = locDate.toLocaleString(Qt.locale(), "dd.mm.yyyy hh:mm");
+        date.text = locDate.toLocaleString(Qt.locale(), "dd.MM.yyyy hh:mm");
         open()
     }
     //Изначально работа велась с моделью, в которой известен номер строки
@@ -66,15 +66,6 @@ Dialog{
         }
         else{
             editBylessonId(LessonsModel.getId(row));
-
-//            isNew = false;
-//            //console.log(targetIndex)
-//            nameBl = "Edit lesson"
-//            LessonMapper.updateData(row)
-//            targetObject = LessonsModel.getLessonByRow(row);
-//            date.text = targetObject.date.toLocaleString(Qt.locale(), "dd.MM.yyyy hh:MM");
-//            //visiters.openWithFilter(LessonsModel.getId(row))
-//            subjectName.text = SubjectsModel.getNameByID(subjectID.text);
         }
 
         //open()
@@ -120,15 +111,6 @@ Dialog{
                     }
                 }
             }
-//            Binding{
-//                target: targetObject
-//                property: 'date'
-//                value: date.text
-////                target: date
-////                property: "text"
-////                value: targetObject.date.toLocaleString(Qt.locale(), "dd.MM.yyyy hh:mm")
-//            }
-
 
 
             BaseText {
@@ -272,9 +254,9 @@ Dialog{
     //Эта ветвь при добавлении нового элемента
 
     function simpleSave(){
-        console.log(locDate);
         targetObject.date = locDate;
-        targetObject.Save();
+        console.log(subjectID.text);
+        targetObject.save();
     }
 
     function save()

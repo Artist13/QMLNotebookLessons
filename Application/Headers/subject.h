@@ -20,6 +20,7 @@ public:
     explicit Subject(QObject *parent = nullptr);
     Subject(const int &ID);
     Subject(Subject& _other);
+    static Subject* getSubject(const int &ID);
 
     Subject operator=(Subject& _other);
 
