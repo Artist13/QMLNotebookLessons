@@ -52,6 +52,7 @@ Dialog{
                 subjectID.text = targetObject.subject.ID;
                 subjectName.text = targetObject.subject.name;
             }
+            longs.currentIndex = longs.find(targetObject.longs.toString());
         }
         date.text = locDate.toLocaleString(Qt.locale(), "dd.MM.yyyy");
         time.text = locDate.toLocaleTimeString(Qt.locale(), "hh:mm");
@@ -203,10 +204,14 @@ Dialog{
                 Layout.fillWidth: true
             }
 
-            TextField{
+            ComboBox{
                 id: longs
                 Layout.columnSpan: 2
                 Layout.preferredWidth: 300
+                model: [0.5, 1, 1.5]
+                onActivated: {
+                    targetObject.longs = currentText;
+                }
             }
 
 
@@ -264,14 +269,13 @@ Dialog{
         Component.onCompleted: {
             LessonMapper.addMapping(date, (0x100 + 2), "text")
             LessonMapper.addMapping(subjectID, (0x100 + 3), "text")
-            LessonMapper.addMapping(longs, (0x100 + 4), "text")
+            //LessonMapper.addMapping(longs, (0x100 + 4), "text")
         }
     }
     //Эта ветвь при добавлении нового элемента
 
     function simpleSave(){
         targetObject.date = locDate;
-        console.log(subjectID.text);
         targetObject.save();
     }
 

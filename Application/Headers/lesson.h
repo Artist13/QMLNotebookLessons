@@ -19,7 +19,7 @@ class Lesson : public QObject
     Q_PROPERTY(int ID READ ID WRITE setID NOTIFY IDChanged)
     Q_PROPERTY(QDateTime date READ date WRITE setDate NOTIFY dateChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
-
+    Q_PROPERTY(double longs READ longs WRITE setLongs NOTIFY longsChanged)
     Q_PROPERTY(Subject* subject READ subject WRITE setSubject NOTIFY subjectChanged)
 public:
     explicit Lesson(QObject *parent = nullptr);
@@ -50,6 +50,7 @@ signals:
     void onLongsChanged();
     void IDChanged();
     void nameChanged();
+    void longsChanged();
 
 
 private:
