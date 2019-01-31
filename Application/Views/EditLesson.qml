@@ -25,10 +25,10 @@ Dialog{
         LessonMapper.newData();
         date.text = locDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy");
         time.text = locDate.toLocaleTimeString(Qt.locale(), "hh:mm");
-        date.visible = false;
-        dateLabel.visible = false;
-        time.visible = false;
-        timeLabel.visible = false;
+        //date.visible = false;
+        //dateLabel.visible = false;
+        //time.visible = false;
+        //timeLabel.visible = false;
         open()
     }
     //Очищаются ли поля
@@ -122,7 +122,7 @@ Dialog{
                 MouseArea{
                     anchors.fill: parent
                     onClicked: {
-                        //dialogCalendar.show(locDate)
+                        dialogCalendar.show(locDate)
                     }
                 }
             }
@@ -163,14 +163,11 @@ Dialog{
                 onAccepted: {
                     locDate.setHours(timepicker.hours);
                     locDate.setMinutes(timepicker.minutes);
-                    targetObject.date = locDate;
-                    console.log(targetObject.date.toString());
+                    //targetObject.date = locDate;
+                    //console.log(targetObject.date.toString());
                     time.text = locDate.toLocaleTimeString(Qt.locale(), "hh:mm");
-                    //time.text = timepicker.timeToString();
                 }
             }
-
-
 
             BaseText {
                 text: qsTr("Предмет")
@@ -215,19 +212,6 @@ Dialog{
 
         }
 
-//        Rectangle{
-//            //color: 'red'
-//            anchors.bottom: bottomButtons.top
-//            anchors.left: parent.left
-//            anchors.right: parent.right
-//            height: 100
-//            VisitsListView{
-//                id: visiters
-//                anchors.fill: parent
-//                lessonId: LessonsModel.getId(targetIndex)
-//            }
-//        }
-
         Rectangle{
             id: bottomButtons
             color: form.baseBGColor
@@ -242,26 +226,6 @@ Dialog{
                 anchors.right: parent.right
                 anchors.margins: 5
                 spacing:  10
-                //Пока не знаю нужны ли они
-//                Button{
-//                    id: buttonPrevios
-//                    text: qsTr("Prev")
-//                    Layout.preferredWidth: 80
-
-//                    onClicked: {
-//                        LessonMapper.toPrevious()
-//                    }
-//                }
-
-//                Button{
-//                    id: buttonNext
-//                    text: qsTr("Next")
-//                    Layout.preferredWidth: 80
-
-//                    onClicked: {
-//                        LessonMapper.toNext()
-//                    }
-//                }
 
                 Rectangle{
                     Layout.fillWidth: true
@@ -293,13 +257,6 @@ Dialog{
                         close()
                     }
                 }
-
-//                Button{
-//                    text: qsTr("Refresh")
-//                    onClicked: {
-//                        LessonMapper.updateData(targetIndex)
-//                    }
-//                }
             }
         }
 
@@ -354,6 +311,7 @@ Dialog{
         onAccepted: {
             var locIndex = listSubjects.choosenElement;
             var locSubjID = SubjectsModel.getId(locIndex);
+            targetObject.subject = SubjectsModel.getSubjectByID(locSubjID);
             subjectID.text = locSubjID;
             subjectName.text = SubjectsModel.getNameByID(locSubjID);
         }
@@ -441,7 +399,11 @@ Dialog{
                         }
 
                         onClicked: {
-                            locDate = calendar.getDate()
+                            var tempDate = calendar.getDate();
+                            tempDate.setHours(locDate.getHours());
+                            tempDate.setMinutes(locDate.getMinutes());
+                            locDate = tempDate;
+                            //targetObject.date = locDate;
                             date.text = Qt.formatDate(locDate, "dd.MM.yyyy");
                             dialogCalendar.close();
                         }

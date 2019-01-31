@@ -85,6 +85,7 @@ public slots:
     void setFilter(QString _filter);
     void updateElement(const int row, const QString _name, const QString _classNum);
     QString getNameByID(const int ID) const;
+    QObject* getSubjectByID(const int ID);
 };
 
 #endif // SUBJECT_H

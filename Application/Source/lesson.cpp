@@ -248,9 +248,11 @@ QList<QObject *> LessonModel::lessonsList(const QDate &date)
         }
         //Если предмет не указан, то возбуждается ошибка в sql запросе
         //Это в целом некорректная ситуация. Но нужен корректный результат
-        qDebug() << "Subject in db: " << query.value(FIELD_SUBJECT).toInt();
-        if(int locSubjID = query.value(FIELD_SUBJECT).toInt() != 0){
-            Subject *locSubj = new Subject(locSubjID);
+        qDebug() << "ToInt: " << query.value(FIELD_SUBJECT).toInt();
+        qDebug() << "ToString: " << query.value(FIELD_SUBJECT).toString();
+        int locSubjID = query.value(FIELD_SUBJECT).toInt();
+        if(locSubjID != 0){
+            Subject *locSubj = Subject::getSubject(locSubjID);
             lesson->setSubject(locSubj);
         }
         lessons.append(lesson);

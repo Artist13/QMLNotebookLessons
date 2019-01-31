@@ -247,3 +247,8 @@ QString SubjectModel::getNameByID(const int ID) const
     Subject* tempSubjecct = new Subject(ID);
     return tempSubjecct->getFullName();
 }
+
+QObject *SubjectModel::getSubjectByID(const int ID)
+{
+    return Subject::getSubject(ID);
+}
