@@ -6,12 +6,14 @@ import QtQuick.Layouts 1.1
 //Рукодельная реализация timepickera
 //Нужно сделать хорошую разметку и дизайн
 Rectangle {
-    function setHours(hours){
-        timepicker.hours = hours;
+    function setHours(_hours){
+        hours = _hours;
+        console.log(hours);
     }
 
-    function setMinutes(minutes){
-        timepicker.minutes = minutes;
+    function setMinutes(_minutes){
+        minutes = _minutes;
+        console.log(minutes)
     }
 
     function timeToString(){

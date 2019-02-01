@@ -88,9 +88,9 @@ Dialog{
                 id: classNum
                 Layout.preferredWidth: 200
                 model: [11, 9]
-                onActivated: {
-                    targetObject.classNum = currentText;s
-                }
+//                onActivated: {
+//                    targetObject.classNum = currentText;
+//                }
             }
 //            TextField{
 //                id: classNum
@@ -151,6 +151,8 @@ Dialog{
     function updateElement(_index){
         console.log("save old")
         //SubjectsModel.updateElement(targetIndex, subjectName.text, classNum.text)
+        targetObject.name = subjectName.text;
+        targetObject.classNum = classNum.currentText;
         targetObject.Save();
         SubjectsModel.updateModel()
     }

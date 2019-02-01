@@ -42,8 +42,8 @@ Item {
 
             }
             function show(){
-                timepicker.setHours(targetObject.date.getHours());
-                timepicker.setMinutes(targetObject.date.getMinutes());
+                timepicker.setHours(locTime.getHours());
+                timepicker.setMinutes(locTime.getMinutes());
                 tp.open();
             }
 

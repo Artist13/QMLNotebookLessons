@@ -36,7 +36,7 @@ public:
     Q_INVOKABLE void Save();
     int getID();
 
-    QString getFullName() const;
+    Q_INVOKABLE QString getFullName() const;
 
     ~Subject();
 signals:
@@ -54,6 +54,8 @@ private:
 
     void CreateNewRecord() const;
     void UpdateRecord();
+
+    QString ClassNumString() const;
 };
 
 

@@ -88,7 +88,7 @@ void Lesson::setLongs(const double &longs)
 QString Lesson::name() const
 {
     if(_subj != nullptr){
-        return _subj->name();
+        return _subj->getFullName();
     }else{
         return this->genDefaultName();
     }

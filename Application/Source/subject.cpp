@@ -52,7 +52,6 @@ Subject *Subject::getSubject(const int &ID)
         return locSubj;
         //qDebug() << _ID << "|" << _Name << "|" << _ClassNum;
     }else{
-        qDebug() << "Subject not found";
         return nullptr;
     }
 }
@@ -118,7 +117,7 @@ int Subject::getID()
 
 QString Subject::getFullName() const
 {
-    return _Name + " " + QString::number(_ClassNum);
+    return _Name + " " + ClassNumString();
 }
 
 Subject::~Subject()
@@ -153,6 +152,11 @@ void Subject::UpdateRecord()
         qDebug() << "error update " << TABLE_SUBJECTS;
         qDebug() << query.lastError().text();
     }
+}
+
+QString Subject::ClassNumString() const
+{
+    return QString::number(_ClassNum) + " кл.";
 }
 
 SubjectModel::SubjectModel(QObject* parent) : QSqlQueryModel(parent)

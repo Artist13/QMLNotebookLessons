@@ -6,6 +6,7 @@ import QtQuick.Layouts 1.1
 import "../Helpers"
 //import "MyTypes.Lesson"
 
+
 Dialog{
     id: topElement
     title: nameBl
@@ -16,6 +17,7 @@ Dialog{
     property string nameBl: "Edit"
     property int targetIndex : -1
     property var targetObject;
+    property var locSubject;
     property var locDate;//Дублирует данные из модели занятия //Пока не обрабатываются моменты когда объек = undefined
 
     function create(targetDate){
@@ -24,7 +26,10 @@ Dialog{
         locDate = targetDate;
         LessonMapper.newData();
         date.text = locDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy");
-        time.text = locDate.toLocaleTimeString(Qt.locale(), "hh:mm");
+        time.setVal(locDate);
+        targetObject = Object.create(null);
+        targetObject.date = locDate;
+        targetObject.longs = longs.currentText;
         open()
     }
     //Очищаются ли поля
@@ -41,12 +46,17 @@ Dialog{
         }else{
             isNew = false;
             nameBl = "Edit lesson"
-            locDate = targetObject.date;
+            if(isNaN(targetObject.date)){
+                locDate = new Date();
+                locDate.setHours(12);
+                locDate.setMinutes(0);
+            }else
+                locDate = targetObject.date
             //Идет обращение к свойству
-            //subjectName.text = SubjectsModel.getNameByID(subjectID.text);
+            //subjectName.text = SubjectsModel.getNameByID(subjectID.text)
             if(targetObject.subject !== null){
                 subjectID.text = targetObject.subject.ID;
-                subjectName.text = targetObject.subject.name;
+                subjectName.text = targetObject.subject.getFullName();
             }
             longs.currentIndex = longs.find(targetObject.longs.toString());
         }
@@ -240,6 +250,7 @@ Dialog{
 
     function simpleSave(){
         targetObject.date = locDate;
+
         targetObject.save();
     }
 
@@ -275,7 +286,7 @@ Dialog{
             var locSubjID = SubjectsModel.getId(locIndex);
             targetObject.subject = SubjectsModel.getSubjectByID(locSubjID);
             subjectID.text = locSubjID;
-            subjectName.text = SubjectsModel.getNameByID(locSubjID);
+            subjectName.text = targetObject.subject.getFullName();
         }
     }
 
@@ -366,6 +377,7 @@ Dialog{
                             tempDate.setMinutes(locDate.getMinutes());
                             locDate = tempDate;
                             //targetObject.date = locDate;
+                            console.log(tempDate);
                             date.text = Qt.formatDate(locDate, "dd.MM.yyyy");
                             dialogCalendar.close();
                         }
