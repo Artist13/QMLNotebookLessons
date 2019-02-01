@@ -25,10 +25,6 @@ Dialog{
         LessonMapper.newData();
         date.text = locDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy");
         time.text = locDate.toLocaleTimeString(Qt.locale(), "hh:mm");
-        //date.visible = false;
-        //dateLabel.visible = false;
-        //time.visible = false;
-        //timeLabel.visible = false;
         open()
     }
     //Очищаются ли поля
@@ -55,7 +51,7 @@ Dialog{
             longs.currentIndex = longs.find(targetObject.longs.toString());
         }
         date.text = locDate.toLocaleString(Qt.locale(), "dd.MM.yyyy");
-        time.text = locDate.toLocaleTimeString(Qt.locale(), "hh:mm");
+        time.setVal(locDate);
         open()
     }
     function formateTime(hours, minutes){
@@ -115,7 +111,6 @@ Dialog{
                 Layout.fillWidth: true
             }
 
-
             TextField{
                 id: date
                 Layout.columnSpan: 2
@@ -132,43 +127,60 @@ Dialog{
                 text: qsTr("Время")
                 Layout.fillWidth: true
             }
-
-
-            TextField{
-                id: time
+            TimeField{
+                id:time
                 Layout.columnSpan: 2
+                height: 30
+                //Layout.fillHeight: true
                 Layout.preferredWidth: 300
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: {
-                        tp.show();
-                        //dialogCalendar.show(locDate)
-                    }
+                onSelected: {
+                   var tempVal = getVal();
+                   locDate.setHours(tempVal.getHours());
+                   locDate.setMinutes(tempVal.getMinutes());
                 }
             }
-            Dialog{
-                id: tp
-                width: 300
-                height: 375
-                TimePicker{
-                    id:timepicker
-                    anchors.fill: parent
 
-                }
-                function show(){
-                    timepicker.setHours(targetObject.date.getHours());
-                    timepicker.setMinutes(targetObject.date.getMinutes());
-                    tp.open();
-                }
+//            BaseText {
+//                id: timeLabel
+//                text: qsTr("Время")
+//                Layout.fillWidth: true
+//            }
 
-                onAccepted: {
-                    locDate.setHours(timepicker.hours);
-                    locDate.setMinutes(timepicker.minutes);
-                    //targetObject.date = locDate;
-                    //console.log(targetObject.date.toString());
-                    time.text = locDate.toLocaleTimeString(Qt.locale(), "hh:mm");
-                }
-            }
+//            TextField{
+//                id: time
+//                Layout.columnSpan: 2
+//                Layout.preferredWidth: 300
+//                MouseArea{
+//                    anchors.fill: parent
+//                    onClicked: {
+//                        tp.show();
+//                        //dialogCalendar.show(locDate)
+//                    }
+//                }
+//            }
+//            Dialog{
+//                id: tp
+//                width: 300
+//                height: 375
+//                TimePicker{
+//                    id:timepicker
+//                    anchors.fill: parent
+
+//                }
+//                function show(){
+//                    timepicker.setHours(targetObject.date.getHours());
+//                    timepicker.setMinutes(targetObject.date.getMinutes());
+//                    tp.open();
+//                }
+
+//                onAccepted: {
+//                    locDate.setHours(timepicker.hours);
+//                    locDate.setMinutes(timepicker.minutes);
+//                    //targetObject.date = locDate;
+//                    //console.log(targetObject.date.toString());
+//                    time.text = locDate.toLocaleTimeString(Qt.locale(), "hh:mm");
+//                }
+//            }
 
             BaseText {
                 text: qsTr("Предмет")
@@ -213,8 +225,6 @@ Dialog{
                     targetObject.longs = currentText;
                 }
             }
-
-
         }
 
         Rectangle{
@@ -225,50 +235,39 @@ Dialog{
             anchors.left: parent.left
             anchors.right: parent.right
 
-            RowLayout{
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
+            Button{
+                anchors.right: buttonCancel.left
+                anchors.margins: 5
+                id: buttonOk
+                text: qsTr("Ok")
+                width: 80
+                onClicked: {
+                    if(isNew){
+                        save()
+                    }else
+                    {
+                        simpleSave();
+                    }
+                    close()
+                }
+            }
+
+            Button{
                 anchors.right: parent.right
                 anchors.margins: 5
-                spacing:  10
-
-                Rectangle{
-                    Layout.fillWidth: true
-                    color: "#eeeeee"
-                }
-
-                Button{
-                    id: buttonOk
-                    text: qsTr("Ok")
-                    Layout.preferredWidth: 80
-                    onClicked: {
-                        //console.log("And error")
-                        if(isNew){
-                            save()
-                        }else
-                        {
-                            //updateElement(targetIndex)
-                            simpleSave();
-                        }
-                        close()
-                    }
-                }
-
-                Button{
-                    id: buttonCancel
-                    text: qsTr("Cancel")
-                    Layout.preferredWidth: 80
-                    onClicked: {
-                        close()
-                    }
+                id: buttonCancel
+                text: qsTr("Cancel")
+                width: 80
+                onClicked: {
+                    close()
                 }
             }
         }
 
 
         Component.onCompleted: {
-            LessonMapper.addMapping(date, (0x100 + 2), "text")
-            LessonMapper.addMapping(subjectID, (0x100 + 3), "text")
+            //LessonMapper.addMapping(date, (0x100 + 2), "text")
+            //LessonMapper.addMapping(subjectID, (0x100 + 3), "text")
             //LessonMapper.addMapping(longs, (0x100 + 4), "text")
         }
     }
@@ -282,13 +281,7 @@ Dialog{
     function save()
     {
         console.log("save new lesson");
-        //database.insertIntoTable(nameField.text, secondNameField.text, thirdNameField.text, phoneField.text, birthField.text);
         LessonsModel.add(date.text + " " + time.text, subjectID.text, longs.text)
-        LessonsModel.updateModel()
-    }
-    function updateElement(_index){
-        console.log("save old")
-        LessonsModel.updateElement(targetIndex, date.text, subjectID.text, longs.text)
         LessonsModel.updateModel()
     }
 

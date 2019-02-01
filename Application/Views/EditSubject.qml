@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
+import "../Helpers"
 
 Dialog{
     id: topElement
@@ -12,6 +13,7 @@ Dialog{
     property bool isNew: false
     property string nameBl: "Edit"
     property int targetIndex : -1
+    property var targetObject
     function editEntry(row)
     {
         targetIndex = row
@@ -30,8 +32,12 @@ Dialog{
         open()
     }
     contentItem: Rectangle{
+        readonly property color baseTextColor: "white"
+        readonly property color baseBGColor: "#2e2f30"
+        readonly property int fontSize: 16
         implicitHeight: 220
         implicitWidth: 480
+        color: baseBGColor
 
         GridLayout{
             anchors.top: parent.top
@@ -44,19 +50,19 @@ Dialog{
             rows: 4
             columns: 2
 
-            Text {
-                text: qsTr("Name")
+            BaseText {
+                text: qsTr("Название")
                 Layout.fillWidth: true
             }
 
             TextField{
                 id: subjectName
-                Layout.preferredWidth: 200
+                Layout.preferredWidth: 300
             }
 
 
-            Text {
-                text: qsTr("Class Number")
+            BaseText {
+                text: qsTr("Класс")
                 Layout.fillWidth: true
             }
 
@@ -67,80 +73,41 @@ Dialog{
             }*/
             TextField{
                 id: classNum
-                Layout.preferredWidth: 200
+                Layout.preferredWidth: 300
             }
 
         }
 
         Rectangle{
-            color: "#eeeeee"
+            color: parent.baseBGColor
             height: 50
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
 
-            RowLayout{
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
+            Button{
+                anchors.right: buttonCancel.left
+                anchors.margins: 5
+                id: buttonOk
+                text: qsTr("Ok")
+                onClicked: {
+                    if(targetIndex === -1){
+                        save()
+                    }else
+                    {
+                        updateElement(targetIndex)
+                    }
+                    close()
+                }
+            }
+
+            Button{
                 anchors.right: parent.right
                 anchors.margins: 5
-                spacing:  10
-
-                Button{
-                    id: buttonPrevios
-                    text: qsTr("Prev")
-                    Layout.preferredWidth: 80
-
-                    onClicked: {
-                        SubjectMapper.toPrevious()
-                    }
-                }
-
-                Button{
-                    id: buttonNext
-                    text: qsTr("Next")
-                    Layout.preferredWidth: 80
-
-                    onClicked: {
-                        SubjectMapper.toNext()
-                    }
-                }
-
-                Rectangle{
-                    Layout.fillWidth: true
-                    color: "#eeeeee"
-                }
-
-                Button{
-                    id: buttonOk
-                    text: qsTr("Ok")
-                    Layout.preferredWidth: 80
-                    onClicked: {
-                        if(targetIndex === -1){
-                            save()
-                        }else
-                        {
-                            updateElement(targetIndex)
-                        }
-                        close()
-                    }
-                }
-
-                Button{
-                    id: buttonCancel
-                    text: qsTr("Cancel")
-                    Layout.preferredWidth: 80
-                    onClicked: {
-                        close()
-                    }
-                }
-
-                Button{
-                    text: qsTr("Refresh")
-                    onClicked: {
-                        console.log(targetIndex);
-                        SubjectMapper.updateData(targetIndex)
-                    }
+                id: buttonCancel
+                text: qsTr("Cancel")
+                onClicked: {
+                    close()
                 }
             }
         }

@@ -21,10 +21,11 @@
         <file>Views/VisitsTableView.qml</file>
         <file>Views/TopBar.qml</file>
         <file>Files/eventindicator.png</file>
-        <file>Views/BaseText.qml</file>
         <file>MainPage.qml</file>
         <file>ShortListLessons.qml</file>
         <file>Helpers/CustomCalendar.qml</file>
         <file>Helpers/TimePicker.qml</file>
+        <file>Helpers/TimeField.qml</file>
+        <file>Helpers/BaseText.qml</file>
     </qresource>
 </RCC>
