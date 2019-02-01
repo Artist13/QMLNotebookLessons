@@ -226,6 +226,7 @@ QString Lesson::genDefaultName() const
 //---------------------------------------------------------------------------------
 //Получаем список занятий на дату
 //Открываем запрос и переводим его в Лист. Насколько это долго
+//Сортировка на стороне js
 QList<QObject *> LessonModel::lessonsList(const QDate &date)
 {
     QSqlQuery query;

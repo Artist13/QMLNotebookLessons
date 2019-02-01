@@ -189,9 +189,28 @@ Item{
 
         }
         ShortListLessons{
+            function getLessonsByDate(someDate){
+                var locList = LessonsModel.lessonsList(someDate);
+                //sort
+                locList.sort(dynamicSort("date"));
+                return locList;
+            }
+            function dynamicSort(property){
+                var sortOrder = 1;
+                    if(property[0] === "-") {
+                        sortOrder = -1;
+                        property = property.substr(1);
+                    }
+                    return function (a,b) {
+                        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                        return result * sortOrder;
+                    }
+            }
+
+            //LessonsModel.lessonsList(shortList.connectedCalendar.selectedDate)
             id:shortList
             connectedCalendar: mainCalendar
-            connectedModel: LessonsModel.lessonsList(shortList.connectedCalendar.selectedDate)
+            connectedModel: getLessonsByDate(shortList.connectedCalendar.selectedDate)
             //Обновляет список каждые 500мс
             Timer{
                 interval: 500
@@ -202,7 +221,7 @@ Item{
                     //Костыль для обновления календаря
                     mainCalendar.showNextMonth();
                     mainCalendar.showPreviousMonth();
-                    var tempModel = LessonsModel.lessonsList(shortList.connectedCalendar.selectedDate);
+                    var tempModel = shortList.getLessonsByDate(shortList.connectedCalendar.selectedDate)
                     //Будут ошибки, если длинна не изменится, а содержимое да нужно проверять на стороне C++
                     if(tempModel.length != shortList.connectedModel.length)
                         shortList.connectedModel = tempModel;
