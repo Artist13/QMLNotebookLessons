@@ -191,6 +191,7 @@ Item{
         ShortListLessons{
             id:shortList
             connectedCalendar: mainCalendar
+            connectedModel: LessonsModel.lessonsList(shortList.connectedCalendar.selectedDate)
             //Обновляет список каждые 500мс
             Timer{
                 interval: 500
@@ -201,7 +202,10 @@ Item{
                     //Костыль для обновления календаря
                     mainCalendar.showNextMonth();
                     mainCalendar.showPreviousMonth();
-                    shortList.connectedModel = LessonsModel.lessonsList(shortList.connectedCalendar.selectedDate)//eventModel.eventsForDate(mainCalendar.selectedDate)
+                    var tempModel = LessonsModel.lessonsList(shortList.connectedCalendar.selectedDate);
+                    //Будут ошибки, если длинна не изменится, а содержимое да нужно проверять на стороне C++
+                    if(tempModel.length != shortList.connectedModel.length)
+                        shortList.connectedModel = tempModel;
                 }
             }
         }
