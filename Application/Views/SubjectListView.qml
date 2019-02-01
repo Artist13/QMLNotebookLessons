@@ -90,7 +90,7 @@ Item {
                 onDoubleClicked: {
                     var component = Qt.createComponent("EditSubject.qml");
                     var obj = component.createObject(parent);
-                    obj.editEntry(index)
+                    obj.editById(SubjectsModel.getId(index));
                 }
 
             }

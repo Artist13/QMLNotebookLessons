@@ -33,7 +33,7 @@ public:
     int classNum() const;
     void setClassNum(const int &classNum);
 
-    void Save();
+    Q_INVOKABLE void Save();
     int getID();
 
     QString getFullName() const;

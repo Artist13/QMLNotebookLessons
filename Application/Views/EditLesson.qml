@@ -122,6 +122,7 @@ Dialog{
                     }
                 }
             }
+
             BaseText {
                 id: timeLabel
                 text: qsTr("Время")
@@ -140,48 +141,6 @@ Dialog{
                 }
             }
 
-//            BaseText {
-//                id: timeLabel
-//                text: qsTr("Время")
-//                Layout.fillWidth: true
-//            }
-
-//            TextField{
-//                id: time
-//                Layout.columnSpan: 2
-//                Layout.preferredWidth: 300
-//                MouseArea{
-//                    anchors.fill: parent
-//                    onClicked: {
-//                        tp.show();
-//                        //dialogCalendar.show(locDate)
-//                    }
-//                }
-//            }
-//            Dialog{
-//                id: tp
-//                width: 300
-//                height: 375
-//                TimePicker{
-//                    id:timepicker
-//                    anchors.fill: parent
-
-//                }
-//                function show(){
-//                    timepicker.setHours(targetObject.date.getHours());
-//                    timepicker.setMinutes(targetObject.date.getMinutes());
-//                    tp.open();
-//                }
-
-//                onAccepted: {
-//                    locDate.setHours(timepicker.hours);
-//                    locDate.setMinutes(timepicker.minutes);
-//                    //targetObject.date = locDate;
-//                    //console.log(targetObject.date.toString());
-//                    time.text = locDate.toLocaleTimeString(Qt.locale(), "hh:mm");
-//                }
-//            }
-
             BaseText {
                 text: qsTr("Предмет")
                 Layout.fillWidth: true
@@ -199,6 +158,12 @@ Dialog{
                 id: subjectName
                 readOnly: true
                 Layout.preferredWidth: 200
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        listSubjectsForChoose.open();
+                    }
+                }
             }
 
             Button{

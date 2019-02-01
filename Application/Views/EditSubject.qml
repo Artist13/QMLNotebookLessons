@@ -14,6 +14,24 @@ Dialog{
     property string nameBl: "Edit"
     property int targetIndex : -1
     property var targetObject
+
+    function editById(id){
+        targetIndex = id;
+        targetObject = SubjectsModel.getSubjectByID(id);
+        if(id == -1){
+            isNew = true;
+            nameBl = "New subject";
+            //SubjectMapper.newData();
+        }else{
+            isNew = false;
+            nameBl = "Edit subject";
+            subjectName.text = targetObject.name;
+            //classNum.text = targetObject.classNum;
+            classNum.currentIndex = classNum.find(targetObject.classNum.toString());
+        }
+        open()
+    }
+
     function editEntry(row)
     {
         targetIndex = row
@@ -27,7 +45,7 @@ Dialog{
             //console.log(targetIndex)
             nameBl = "Edit subject"
             SubjectMapper.updateData(row)
-            subjectName
+            //subjectName
         }
         open()
     }
@@ -66,15 +84,18 @@ Dialog{
                 Layout.fillWidth: true
             }
 
-            /*ComboBox{
+            ComboBox{
                 id: classNum
                 Layout.preferredWidth: 200
-                model: ClassNumbers
-            }*/
-            TextField{
-                id: classNum
-                Layout.preferredWidth: 300
+                model: [11, 9]
+                onActivated: {
+                    targetObject.classNum = currentText;s
+                }
             }
+//            TextField{
+//                id: classNum
+//                Layout.preferredWidth: 300
+//            }
 
         }
 
@@ -116,7 +137,7 @@ Dialog{
         Component.onCompleted: {
 
             SubjectMapper.addMapping(subjectName, (0x100 + 2), "text")
-            SubjectMapper.addMapping(classNum, (0x100 + 3), "text")
+            SubjectMapper.addMapping(classNum, (0x100 + 3), "currentText")
         }
     }
     //Эта ветвь при добавлении нового элемента
@@ -124,12 +145,13 @@ Dialog{
     {
         console.log("save new");
         //database.insertIntoTable(nameField.text, secondNameField.text, thirdNameField.text, phoneField.text, birthField.text);
-        SubjectsModel.add(subjectName.text, classNum.text)
+        SubjectsModel.add(subjectName.text, classNum.currentText)
         SubjectsModel.updateModel()
     }
     function updateElement(_index){
         console.log("save old")
-        SubjectsModel.updateElement(targetIndex, subjectName.text, classNum.text)
+        //SubjectsModel.updateElement(targetIndex, subjectName.text, classNum.text)
+        targetObject.Save();
         SubjectsModel.updateModel()
     }
 }
