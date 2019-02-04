@@ -44,7 +44,7 @@ Dialog{
     //Нужно проработать mapper для использования с объектами, а не таблицами
     function editBylessonId(id){
         targetIndex = id;
-        targetObject = LessonsModel.getLessonByID(id);
+        targetObject = Object.create(LessonsModel.getLessonByID(id));
         if(id == -1){
             isNew = true;
             nameBl = "New lesson"

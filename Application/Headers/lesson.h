@@ -24,6 +24,7 @@ class Lesson : public QObject
 public:
     explicit Lesson(QObject *parent = nullptr);
     Lesson(const int &ID);
+    static Lesson* getLesson(const int ID);
     ~Lesson();
 
     void Init(const int &ID);
@@ -104,7 +105,7 @@ public Q_SLOTS:
     //QString getNameByID(const int ID) const;
     QList<QObject*> lessonsList(const QDate &date);
     //Пробую использовать MOC
-    Lesson *getLessonByID(const int id);
+    QObject *getLessonByID(const int id);
     QObject *getLessonByRow(const int row);
     void removeById(const int ID);
 

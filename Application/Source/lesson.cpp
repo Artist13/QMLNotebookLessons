@@ -13,6 +13,28 @@ Lesson::Lesson(const int &ID)
     Init(ID);
 }
 
+Lesson *Lesson::getLesson(const int ID)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM " TABLE_LESSONS " WHERE " FIELD_ID " =  :ID");
+    query.bindValue(":ID", ID);
+    query.exec();
+    //Нужна проверка на уникальность записи
+    query.first();
+    if(query.isValid()){
+        auto locLesson = new Lesson(ID);
+        locLesson->setID(ID);
+        locLesson->setDate(query.value(FIELD_DATE).toDateTime());
+        locLesson->setLongs(query.value(FIELD_LONG).toDouble());
+        auto tempSubj = Subject::getSubject(query.value(FIELD_SUBJECT).toInt());
+        locLesson->setSubject(tempSubj);
+        locLesson->LoadStudents();
+        return locLesson;
+    }else{
+        return nullptr;
+    }
+}
+
 Lesson::~Lesson()
 {
     //Subject задан, но он не корректен - при удалении ошибка
@@ -286,7 +308,7 @@ QList<QObject *> LessonModel::lessonsList(const QDate &date)
     return lessons;
 }
 //Получаем объект занятия по ID
-Lesson* LessonModel::getLessonByID(const int id)
+QObject *LessonModel::getLessonByID(const int id)
 {
     Lesson *tempLesson = new Lesson(id);
     return tempLesson;
@@ -299,8 +321,11 @@ QObject *LessonModel::getLessonByRow(const int row)
 
 void LessonModel::removeById(const int ID)
 {
-    //Может возвращать Lesson*, а не Object*?
-    getLessonByID(ID)->remove();
+    //Может возвращать Lesson*, а не Object*? // Нет тогда qml ругается
+    auto tempLesson = Lesson::getLesson(ID);
+    if(tempLesson == nullptr)
+        return;
+    tempLesson->remove();
 }
 
 LessonModel::LessonModel(QObject *parent) : QSqlQueryModel (parent)
