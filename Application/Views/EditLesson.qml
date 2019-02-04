@@ -22,16 +22,24 @@ Dialog{
 
     function create(targetDate){
         isNew = true;
-        nameBl = "Добавить занятие"
+        nameBl = "Добавить занятие";
         locDate = targetDate;
-        LessonMapper.newData();
+        setDeffaulValue();
+        open()
+    }
+
+    function setDeffaulValue(){
+        locDate.setHours(12);
+        locDate.setMinutes(0);;
         date.text = locDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy");
         time.setVal(locDate);
         targetObject = Object.create(null);
         targetObject.date = locDate;
         targetObject.longs = longs.currentText;
-        open()
+        subjectID.text = "";
+        subjectName.text = "";
     }
+
     //Очищаются ли поля
     //Нужно проработать mapper для использования с объектами, а не таблицами
     function editBylessonId(id){
@@ -41,8 +49,7 @@ Dialog{
             isNew = true;
             nameBl = "New lesson"
             locDate = new Date();
-            subjectID.text = -1;
-            LessonMapper.newData();
+            setDeffaulValue();
         }else{
             isNew = false;
             nameBl = "Edit lesson"
@@ -52,8 +59,6 @@ Dialog{
                 locDate.setMinutes(0);
             }else
                 locDate = targetObject.date
-            //Идет обращение к свойству
-            //subjectName.text = SubjectsModel.getNameByID(subjectID.text)
             if(targetObject.subject !== null){
                 subjectID.text = targetObject.subject.ID;
                 subjectName.text = targetObject.subject.getFullName();
@@ -249,6 +254,7 @@ Dialog{
     //Эта ветвь при добавлении нового элемента
 
     function simpleSave(){
+        //console.log(locDate);
         targetObject.date = locDate;
 
         targetObject.save();
@@ -257,7 +263,7 @@ Dialog{
     function save()
     {
         console.log("save new lesson");
-        LessonsModel.add(date.text + " " + time.text, subjectID.text, longs.text)
+        LessonsModel.add(locDate.toLocaleString(Qt.locale(), "dd.MM.yyyy hh:mm"), subjectID.text, longs.text)
         LessonsModel.updateModel()
     }
 

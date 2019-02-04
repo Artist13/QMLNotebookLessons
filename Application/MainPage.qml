@@ -222,8 +222,9 @@ Item{
                     mainCalendar.showNextMonth();
                     mainCalendar.showPreviousMonth();
                     var tempModel = shortList.getLessonsByDate(shortList.connectedCalendar.selectedDate)
-                    //Будут ошибки, если длинна не изменится, а содержимое да нужно проверять на стороне C++
-                    if(tempModel.length != shortList.connectedModel.length)
+                    //Простой способ проверки эквивалентности содержимого. Следует проработать
+                    //Если обновить элемент и закрыть приложение, то ошибка
+                    if(JSON.stringify(tempModel) !== JSON.stringify(shortList.connectedModel))
                         shortList.connectedModel = tempModel;
                 }
             }

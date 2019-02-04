@@ -15,7 +15,9 @@ Lesson::Lesson(const int &ID)
 
 Lesson::~Lesson()
 {
-    delete _subj;
+    //Subject задан, но он не корректен - при удалении ошибка
+    if(_subj != nullptr)
+        delete _subj;
     DestructStudents();
 }
 
@@ -110,6 +112,30 @@ void Lesson::save()
     }else{
         UpdateRecord();
     }
+}
+
+void Lesson::remove()
+{
+    QSqlQuery query;
+
+    query.prepare("DELETE FROM " TABLE_LESSONS " WHERE " FIELD_ID " = :ID ;");
+    query.bindValue(":ID", _ID);
+
+    if(!query.exec())
+    {
+        qDebug() << "error delete row " << TABLE_LESSONS;
+        qDebug() << query.lastError().text();
+    }
+    //Удаляет соответствующие записи из посещений. Это для занятий которые уже прошли
+    //ЕЩЕ РАЗРАБАТЫВАЕТСЯ!!!!!
+    query.prepare("DELETE FROM " TABLE_VISITS " WHERE " FIELD_LESSON " = :ID:");
+    query.bindValue(":ID", _ID);
+
+    if(!query.exec()){
+        qDebug() << "error delete row " << TABLE_VISITS;
+        qDebug() << query.lastError().text();
+    }
+    _ID = -1;
 }
 
 int Lesson::getID() const
@@ -260,7 +286,7 @@ QList<QObject *> LessonModel::lessonsList(const QDate &date)
     return lessons;
 }
 //Получаем объект занятия по ID
-QObject* LessonModel::getLessonByID(const int id)
+Lesson* LessonModel::getLessonByID(const int id)
 {
     Lesson *tempLesson = new Lesson(id);
     return tempLesson;
@@ -269,6 +295,12 @@ QObject* LessonModel::getLessonByID(const int id)
 QObject *LessonModel::getLessonByRow(const int row)
 {
     return getLessonByID(getId(row));
+}
+
+void LessonModel::removeById(const int ID)
+{
+    //Может возвращать Lesson*, а не Object*?
+    getLessonByID(ID)->remove();
 }
 
 LessonModel::LessonModel(QObject *parent) : QSqlQueryModel (parent)
@@ -296,7 +328,7 @@ void LessonModel::addElement(QVariantList data)
     QSqlQuery query;
 
     Lesson temp;
-    temp.setDate(QDateTime::fromString(data[0].toString(), "dd.MM.yyyy"));
+    temp.setDate(QDateTime::fromString(data[0].toString(), "dd.MM.yyyy hh:mm"));
     Subject *locSubj = Subject::getSubject(data[1].toInt());
     temp.setSubject(locSubj);
     temp.setLongs(data[2].toDouble());
@@ -349,24 +381,7 @@ void LessonModel::add(const QString _date, const QString _subject, const double 
 
 void LessonModel::remove(int row)
 {
-    QSqlQuery query;
-
-    query.prepare("DELETE FROM " TABLE_LESSONS " WHERE " FIELD_ID " = :ID ;");
-    query.bindValue(":ID", getId(row));
-
-    if(!query.exec())
-    {
-        qDebug() << "error delete row " << TABLE_LESSONS;
-        qDebug() << query.lastError().text();
-    }
-
-    query.prepare("DELETE FROM " TABLE_VISITS " WHERE " FIELD_LESSON " = :ID:");
-    query.bindValue(":ID", getId(row));
-
-    if(!query.exec()){
-        qDebug() << "error delete row " << TABLE_VISITS;
-        qDebug() << query.lastError().text();
-    }
+    removeById(getId(row));
 }
 
 void LessonModel::updateElement(const int id, const QString _date, const QString _subject, const double _long)

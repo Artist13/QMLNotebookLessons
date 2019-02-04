@@ -3,6 +3,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.2
 import "Views"
 
 
@@ -26,6 +27,10 @@ Rectangle{
         anchors.margins: 10
         model: connectedModel
         delegate: Rectangle{
+            function removeLesson(){
+                LessonsModel.removeById(lessonId);
+            }
+
             property int lessonId: modelData.ID
             width: eventsListView.width
             height: eventItemColumn.height
@@ -64,12 +69,46 @@ Rectangle{
 
             MouseArea{
                 anchors.fill: parent
-
+                acceptedButtons: Qt.RightButton | Qt.LeftButton
                 onClicked: {
+                    switch(mouse.button){
+                    case Qt.RightButton:
+                        lessonContextMenu.popup()
+                        break
+                    default:
+                        break
+                    }
+                }
+                onDoubleClicked: {
                     lessonEditer.editBylessonId(parent.lessonId);
                 }
             }
         }
+        Menu{
+            id: lessonContextMenu
+
+            MenuItem{
+                text: qsTr("Удалить")
+                onTriggered: {
+                    dialogDelete.open()
+                }
+            }
+        }
+
+        MessageDialog{
+            id: dialogDelete
+            title: qsTr("Удалить занятие")
+            text: qsTr("Подтверждение удаления")
+            icon: StandardIcon.Warning
+            standardButtons: StandardButton.Ok | StandardButton.Cancel
+
+            onAccepted: {
+                //LessonsModel.removeById(eventsListView.currentItem.childAt())
+                eventsListView.currentItem.removeLesson();
+                LessonsModel.updateModel()
+            }
+        }
+
     }
     Rectangle{
         id: footer

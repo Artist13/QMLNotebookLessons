@@ -1,4 +1,4 @@
-﻿#ifndef LESSON_H
+#ifndef LESSON_H
 #define LESSON_H
 
 #include <QString>
@@ -42,6 +42,7 @@ public:
     QString StringView();
 
     Q_INVOKABLE void save();
+    Q_INVOKABLE void remove();
     //void Save();
     int getID() const;
 signals:
@@ -103,8 +104,10 @@ public Q_SLOTS:
     //QString getNameByID(const int ID) const;
     QList<QObject*> lessonsList(const QDate &date);
     //Пробую использовать MOC
-    QObject *getLessonByID(const int id);
+    Lesson *getLessonByID(const int id);
     QObject *getLessonByRow(const int row);
+    void removeById(const int ID);
+
 };
 
 #endif // LESSON_H
