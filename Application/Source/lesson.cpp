@@ -323,7 +323,7 @@ void LessonModel::removeById(const int ID)
 {
     //Может возвращать Lesson*, а не Object*? // Нет тогда qml ругается
     auto tempLesson = Lesson::getLesson(ID);
-    if(tempLesson == nullptr)
+    if(tempLesson == nullptr)//WARNING!!!! ERROR try to delete unexistence record
         return;
     tempLesson->remove();
 }

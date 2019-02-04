@@ -23,7 +23,7 @@ Subject::Subject(const int &ID)
         _ClassNum = query.value(FIELD_SUBJCLASS).toInt();
         //qDebug() << _ID << "|" << _Name << "|" << _ClassNum;
     }else{
-        qDebug() << "Subject not found";
+        //qDebug() << "Subject not found";
         //return nullptr;
     }
 
