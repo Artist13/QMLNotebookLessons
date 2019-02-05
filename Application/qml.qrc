@@ -27,5 +27,6 @@
         <file>Helpers/TimePicker.qml</file>
         <file>Helpers/TimeField.qml</file>
         <file>Helpers/BaseText.qml</file>
+        <file>Helpers/DateField.qml</file>
     </qresource>
 </RCC>

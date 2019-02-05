@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
+import "../Helpers"
 
 Dialog{
     id: topElement
@@ -31,6 +32,10 @@ Dialog{
     }
 
     contentItem: Rectangle{
+        readonly property color baseTextColor: "white"
+        readonly property color baseBGColor: "#2e2f30"
+        readonly property int fontSize: 16
+        color: baseBGColor
         implicitHeight: 220
         implicitWidth: 480
 
@@ -45,59 +50,59 @@ Dialog{
             rows: 4
             columns: 2
 
-            Text {
+            BaseText {
                 text: qsTr("Second name")
                 Layout.fillWidth: true
             }
 
             TextField{
                 id: secondNameField
-                Layout.preferredWidth: 200
+                Layout.preferredWidth: 300
             }
 
-            Text {
+            BaseText {
                 text: qsTr("Name")
                 Layout.fillWidth: true
             }
 
             TextField{
                 id: nameField
-                Layout.preferredWidth: 200
+                Layout.preferredWidth: 300
             }
 
-            Text{
+            BaseText{
                 text: qsTr("Third name")
                 Layout.fillWidth: true
             }
 
             TextField{
                 id: thirdNameField
-                Layout.preferredWidth: 200
+                Layout.preferredWidth: 300
             }
 
-            Text{
+            BaseText{
                 text: qsTr("Birth day")
                 Layout.fillWidth: true
             }
 
             TextField{
                 id: birthField
-                Layout.preferredWidth: 200
+                Layout.preferredWidth: 300
             }
 
-            Text{
+            BaseText{
                 text: qsTr("Телефон")
                 Layout.fillWidth: true
             }
 
             TextField{
                 id: phoneField
-                Layout.preferredWidth: 200
+                Layout.preferredWidth: 300
             }
         }
 
         Rectangle{
-            color: "#eeeeee"
+            color: parent.baseBGColor
             height: 50
             anchors.bottom: parent.bottom
             anchors.left: parent.left
@@ -109,26 +114,6 @@ Dialog{
                 anchors.right: parent.right
                 anchors.margins: 5
                 spacing:  10
-
-                Button{
-                    id: buttonPrevios
-                    text: qsTr("Prev")
-                    Layout.preferredWidth: 80
-
-                    onClicked: {
-                        PersonMapper.toPrevious()
-                    }
-                }
-
-                Button{
-                    id: buttonNext
-                    text: qsTr("Next")
-                    Layout.preferredWidth: 80
-
-                    onClicked: {
-                        PersonMapper.toNext()
-                    }
-                }
 
                 Rectangle{
                     Layout.fillWidth: true

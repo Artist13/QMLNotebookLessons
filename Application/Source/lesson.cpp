@@ -22,6 +22,7 @@ Lesson *Lesson::getLesson(const int ID)
     //Нужна проверка на уникальность записи
     query.first();
     if(query.isValid()){
+        //Все данные заполнятся в конструкторе зачем их переписывать
         auto locLesson = new Lesson(ID);
         locLesson->setID(ID);
         locLesson->setDate(query.value(FIELD_DATE).toDateTime());

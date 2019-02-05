@@ -26,6 +26,25 @@ Student::Student(const int &ID)
     //qDebug() << _ID << "|" << _Name << "|" << _ClassNum;
 }
 
+Student *Student::getStudent(const int ID)
+{
+//    QSqlQuery query;
+//    query.prepare("SELECT * FROM " TABLE_STUDENTS " WHERE " FIELD_ID " =  :ID");
+//    query.bindValue(":ID", ID);
+//    query.exec();
+//    query.first();
+//    if(query.isValid()){
+//        Subject* locSubj = new Subject();
+//        locSubj->setID(ID);
+//        locSubj->setName(query.value(FIELD_NAME).toString());
+//        locSubj->setClassNum(query.value(FIELD_SUBJCLASS).toInt());
+//        return locSubj;
+//        //qDebug() << _ID << "|" << _Name << "|" << _ClassNum;
+//    }else{
+//        return nullptr;
+//    }
+}
+
 Student::~Student()
 {
     delete _person;
@@ -44,7 +63,7 @@ QString Student::name() const
 void Student::setPerson(const int &personID)
 {
     if(_person != nullptr)
-        if(_person->getID() == personID)
+        if(_person->ID() == personID)
             return;
     _person = new Person(personID);
     emit personChanged();
@@ -90,7 +109,7 @@ void Student::CreateNewRecord()
 
     query.prepare("INSERT INTO " TABLE_STUDENTS " (" FIELD_PERSON ", " FIELD_STCLASS ", " FIELD_SUBJECT ") VALUES (:person, :classNum, :subject)");
 
-    query.bindValue(":person", _person->getID());
+    query.bindValue(":person", _person->ID());
     query.bindValue(":classNum", _classNum);
     query.bindValue(":subject", _subject->getID());
     if(!query.exec())
@@ -106,7 +125,7 @@ void Student::UpdateRecord()
     query.prepare("UPDATE " TABLE_STUDENTS
                   " SET " FIELD_PERSON " = :person, " FIELD_STCLASS " = :classNum , " FIELD_SUBJECT " = :subject WHERE id = :ID;");
     query.bindValue(":ID", _ID);
-    query.bindValue(":person", _person->getID());
+    query.bindValue(":person", _person->ID());
     query.bindValue(":classNum", _classNum);
     query.bindValue(":subject", _subject->getID());
     if(!query.exec())

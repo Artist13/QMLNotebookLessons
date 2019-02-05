@@ -17,6 +17,7 @@ Subject::Subject(const int &ID)
     query.exec();
     //Нужна проверка на уникальность записи
     query.first();
+    //Тут должен просто создавать без проверок
     if(query.isValid()){
         _ID = ID;
         _Name = query.value(FIELD_NAME).toString();

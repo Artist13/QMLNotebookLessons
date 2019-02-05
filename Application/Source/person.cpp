@@ -30,14 +30,39 @@ Person::Person(const int &ID)
     _phone = query.value(FIELD_PHONE).toString();
 }
 
+Person *Person::getPerson(const int ID)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM " TABLE_PERSONS " WHERE " FIELD_ID " =  :ID");
+    query.bindValue(":ID", ID);
+    query.exec();
+    //Нужна проверка на уникальность записи
+    query.first();
+    if(query.isValid()){
+        auto locPerson = new Person(ID);
+        //locPerson->setID(ID); //Лишнее оно и так установится
+        return locPerson;
+    }else{
+        return nullptr;
+    }
+}
+
 Person::~Person()
 {
 
 }
 
-int Person::getID() const
+int Person::ID() const
 {
     return _ID;
+}
+
+void Person::setID(const int &ID)
+{
+    if(ID == _ID)
+        return;
+    _ID = ID;
+    emit IDChanged();
 }
 
 
@@ -110,12 +135,27 @@ void Person::setPhone(const QString &phone)
     emit phoneChanged();
 }
 
-void Person::Save()
+void Person::save()
 {
     if(_ID == -1)
         CreateNewRecord();
     else
         UpdateRecord();
+}
+//Нужно реализовывать механизм проверки ссылочности.
+//Для этого все действия с БД нужно выносить в отдельную прослойку //РАЗНЫЕ УРОВНИ
+void Person::remove()
+{
+    QSqlQuery query;
+
+    query.prepare("DELETE FROM " TABLE_PERSONS " WHERE " FIELD_ID " = :ID ;");
+    query.bindValue(":ID", _ID);
+
+    if(!query.exec())
+    {
+        qDebug() << "error delete row " << TABLE_PERSONS;
+        qDebug() << query.lastError().text();
+    }
 }
 
 void Person::CreateNewRecord()
@@ -184,7 +224,7 @@ void PersonModel::addElement(QVariantList data)
     tempPerson->setThirdName(data[2].toString());
     tempPerson->setBirth(QDate::fromString(data[3].toString(), "dd.MM.yyyy"));
     tempPerson->setPhone(data[4].toString());
-    tempPerson->Save();
+    tempPerson->save();
 }
 
 //Передаем sql фильтр
@@ -234,7 +274,7 @@ void PersonModel::updateElement(int row, QString _fname, QString _sname, QString
     qDebug() << QDate::fromString(_birth, "dd.MM.yyyy");
     tempPerson->setBirth(QDate::fromString(_birth, "dd.MM.yyyy"));
     tempPerson->setPhone(_phone);
-    tempPerson->Save();
+    tempPerson->save();
 }
 
 void PersonModel::remove(int row)
@@ -257,7 +297,10 @@ QString PersonModel::getNameByID(const int ID)
     return tempPerson->getStringName();
 }
 
-
+QObject *PersonModel::getByID(const int ID)
+{
+    return Person::getPerson(ID);
+}
 
 QHash<int, QByteArray> PersonModel::roleNames() const
 {

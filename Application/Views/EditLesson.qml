@@ -19,6 +19,7 @@ Dialog{
     property var targetObject;
     property var locSubject;
     property var locDate;//Дублирует данные из модели занятия //Пока не обрабатываются моменты когда объек = undefined
+    property var locTime;
 
     function create(targetDate){
         isNew = true;
@@ -29,15 +30,23 @@ Dialog{
     }
 
     function setDeffaulValue(){
-        locDate.setHours(12);
-        locDate.setMinutes(0);;
+        locTime = new Date(0);
+        locTime.setHours(12);
+        locTime.setMinutes(0);
         date.text = locDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy");
-        time.setVal(locDate);
+        time.setVal(locTime);
         targetObject = Object.create(null);
-        targetObject.date = locDate;
+        targetObject.date = mergeDateAndTime();
         targetObject.longs = longs.currentText;
         subjectID.text = "";
         subjectName.text = "";
+    }
+
+    function mergeDateAndTime(){
+        var tempDate = locDate;
+        tempDate.setHours(locTime.getHours());
+        tempDate.setMinutes(locTime.getMinutes());
+        return tempDate;
     }
 
     //Очищаются ли поля
@@ -55,10 +64,15 @@ Dialog{
             nameBl = "Edit lesson"
             if(isNaN(targetObject.date)){
                 locDate = new Date();
-                locDate.setHours(12);
-                locDate.setMinutes(0);
-            }else
+                locTime = new Date();
+                locTime.setHours(12);
+                locTime.setMinutes(0);
+            }else{
                 locDate = targetObject.date
+                locTime = new Date;
+                locTime.setHours(locDate.getHours());
+                locTime.setMinutes(locDate.getMinutes());
+            }
             if(targetObject.subject !== null){
                 subjectID.text = targetObject.subject.ID;
                 subjectName.text = targetObject.subject.getFullName();
@@ -66,7 +80,7 @@ Dialog{
             longs.currentIndex = longs.find(targetObject.longs.toString());
         }
         date.text = locDate.toLocaleString(Qt.locale(), "dd.MM.yyyy");
-        time.setVal(locDate);
+        time.setVal(locTime);
         open()
     }
     function formateTime(hours, minutes){
@@ -137,6 +151,23 @@ Dialog{
                     }
                 }
             }
+            BaseText {
+                id: dateLabel2
+                text: qsTr("Дата")
+                Layout.fillWidth: true
+            }
+
+
+            DateField{
+                Layout.columnSpan: 2
+                Layout.preferredWidth: 300
+                Layout.fillHeight: true
+                onSelected: {
+                    var tempVal = getVal();
+                    locDate = tempVal;
+                    console.log(locDate);
+                }
+            }
 
             BaseText {
                 id: timeLabel
@@ -146,13 +177,12 @@ Dialog{
             TimeField{
                 id:time
                 Layout.columnSpan: 2
-                height: 30
-                //Layout.fillHeight: true
                 Layout.preferredWidth: 300
+                Layout.fillHeight: true
                 onSelected: {
                    var tempVal = getVal();
-                   locDate.setHours(tempVal.getHours());
-                   locDate.setMinutes(tempVal.getMinutes());
+                   locTime.setHours(tempVal.getHours());
+                   locTime.setMinutes(tempVal.getMinutes());
                 }
             }
 
@@ -254,8 +284,8 @@ Dialog{
     //Эта ветвь при добавлении нового элемента
 
     function simpleSave(){
-        //console.log(locDate);
-        targetObject.date = locDate;
+        //console.log(mergeDateAndTime());
+        targetObject.date = mergeDateAndTime();
 
         targetObject.save();
     }

@@ -9,11 +9,15 @@
 class Student : public QObject
 {
     Q_OBJECT
+//    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+//    Q_PROPERTY(int classNum READ classNum WRITE setClassNum NOTIFY classNumChanged)
+//    Q_PROPERTY(Subject subject READ subject WRITE setSubject NOTIFY subjectChanged)
 public:
     explicit Student(QObject *parent = nullptr);
     Student(Person*, int, QString);
     Student(const QString _name, const QString _fname, const QString _thname, const QDate _birth, const int _class, const QString _subject);
     Student(const int &ID);
+    static Student* getStudent(const int ID);
     ~Student();
 
     int getID() const;
