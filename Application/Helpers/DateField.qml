@@ -5,16 +5,19 @@ import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 
 Item {
-    property var locDate: new Date()
+    property var curDate: new Date()
+
+    //Public interface
     signal selected()
     function getVal(){
-        return locDate;
+        return curDate;
     }
 
-    function setVal(date){
-        locDate = date;
+    function setVal(dateVal){
+        curDate = dateVal;
+        date.text = curDate.toLocaleString(Qt.locale(), "dd.MM.yyyy")
     }
-
+    //---------------------------------------------------------------------
     TextField{
         anchors.fill: parent
         id: date
@@ -23,7 +26,7 @@ Item {
         MouseArea{
             anchors.fill: parent
             onClicked: {
-                dialogCalendar.show(locDate)
+                dialogCalendar.show(curDate)
             }
         }
     }
@@ -110,12 +113,8 @@ Item {
 
                         onClicked: {
                             var tempDate = calendar.getDate();
-                            tempDate.setHours(locDate.getHours());
-                            tempDate.setMinutes(locDate.getMinutes());
-                            locDate = tempDate;
-                            //targetObject.date = locDate;
-                            console.log(tempDate);
-                            date.text = Qt.formatDate(locDate, "dd.MM.yyyy");
+                            curDate = tempDate;
+                            date.text = Qt.formatDate(curDate, "dd.MM.yyyy");
                             dialogCalendar.close();
                             selected();
                         }
