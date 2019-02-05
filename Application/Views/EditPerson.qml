@@ -13,6 +13,7 @@ Dialog{
     property bool isNew: false
     property string nameBl: "Edit"
     property int targetIndex : -1
+    //var locDate;
     function editEntry(row)
     {
         targetIndex = row
