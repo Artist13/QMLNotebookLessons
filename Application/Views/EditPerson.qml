@@ -41,7 +41,9 @@ Dialog{
         if(id == -1){
             isNew = true;
             nameBl = "New person"
+            data.person = PersonsModel.newPerson();
         }else{
+            data.person = Object.create(PersonsModel.getByID(id));
             isNew = false;
             nameBl = "Edit person";
             secondNameField.text = data.person.secondName;
@@ -96,6 +98,9 @@ Dialog{
             TextField{
                 id: secondNameField
                 Layout.preferredWidth: 300
+                onTextChanged: {
+                    data.person.secondName = text;
+                }
             }
 
             BaseText {
@@ -106,6 +111,9 @@ Dialog{
             TextField{
                 id: nameField
                 Layout.preferredWidth: 300
+                onTextChanged: {
+                    data.person.name = text;
+                }
             }
 
             BaseText{
@@ -116,6 +124,9 @@ Dialog{
             TextField{
                 id: thirdNameField
                 Layout.preferredWidth: 300
+                onTextChanged: {
+                    data.person.thirdName = text;
+                }
             }
 
             BaseText{
@@ -140,6 +151,9 @@ Dialog{
             TextField{
                 id: phoneField
                 Layout.preferredWidth: 300
+                onTextChanged: {
+                    data.person.phone = text;
+                }
             }
         }
 
@@ -167,12 +181,7 @@ Dialog{
                     text: qsTr("Ok")
                     Layout.preferredWidth: 80
                     onClicked: {
-                        if(targetIndex === -1){
-                            save()
-                        }else
-                        {
-                            updateElement(targetIndex)
-                        }
+                        savePerson();
                         close()
                     }
                 }
@@ -187,25 +196,9 @@ Dialog{
                 }
             }
         }
-
-
-        Component.onCompleted: {
-//            PersonMapper.addMapping(nameField, (0x100 +2), "text")
-//            PersonMapper.addMapping(secondNameField, (0x100 + 3), "text")
-//            PersonMapper.addMapping(thirdNameField, (0x100 + 4), "text")
-//            PersonMapper.addMapping(birthField, (0x100 + 5), "text")
-//            PersonMapper.addMapping(phoneField, (0x100 + 6), "text")
-        }
     }
-    //Эта ветвь при добавлении нового элемента
-    function save()
-    {
-        //database.insertIntoTable(nameField.text, secondNameField.text, thirdNameField.text, phoneField.text, birthField.text);
-        PersonsModel.add(nameField.text, secondNameField.text, thirdNameField.text, data.person.birth.toLocaleString(Qt.locale(), "dd.MM.yyyy"), phoneField.text);
-        PersonsModel.updateModel()
-    }
-    function updateElement(_index){
-        PersonsModel.updateElement(targetIndex, nameField.text, secondNameField.text, thirdNameField.text, data.person.birth.toLocaleString(Qt.locale(), "dd.MM.yyyy"), phoneField.text)
-        PersonsModel.updateModel()
+
+    function savePerson(){
+        data.person.save();
     }
 }

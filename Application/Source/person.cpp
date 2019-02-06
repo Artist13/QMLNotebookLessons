@@ -302,6 +302,11 @@ QObject *PersonModel::getByID(const int ID)
     return Person::getPerson(ID);
 }
 
+QObject *PersonModel::newPerson()
+{
+    return new Person();
+}
+
 QHash<int, QByteArray> PersonModel::roleNames() const
 {
     QHash<int, QByteArray> roles;

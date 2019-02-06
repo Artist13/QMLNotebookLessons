@@ -102,6 +102,7 @@ public slots:
     void remove(int row);
     QString getNameByID(const int ID);
     QObject* getByID(const int ID);
+    QObject* newPerson();
 };
 
 
