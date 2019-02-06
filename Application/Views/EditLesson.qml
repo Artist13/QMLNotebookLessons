@@ -74,12 +74,7 @@ Dialog{
         }else{
             isNew = false;
             nameBl = "Edit lesson"
-            if(isNaN(targetObject.date)){
-                locDate = new Date();
-                locTime = new Date();
-                locTime.setHours(12);
-                locTime.setMinutes(0);
-            }else{
+            if(isNaN(targetObject.date) == false){
                 locDate = targetObject.date
                 locTime = new Date;
                 locTime.setHours(locDate.getHours());

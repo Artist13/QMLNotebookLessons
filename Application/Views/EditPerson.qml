@@ -18,12 +18,41 @@ Dialog{
         property var person: Object.create(null)
     }
 
+    function setDefaulValue(){
+        secondNameField.text = "";
+        nameField.text = "";
+        thirdNameField.text = "";
+
+    }
+
+    function setDefaultBirth(){
+        var tempDate = new Date();
+        tempDate.setHours(0);
+        tempDate.setMinutes(0);
+        tempDate.setSeconds(0);
+        data.person.birth = tempDate;
+        birthField.setVal(data.person.birth);
+    }
+
     function editPersonById(id){
+        setDefaulValue();
+        //targetIndex = id;
+        data.person = Object.create(PersonsModel.getByID(id));
         if(id == -1){
             isNew = true;
-            nameBl = "Новый человек";
-
+            nameBl = "New person"
+        }else{
+            isNew = false;
+            nameBl = "Edit person";
+            secondNameField.text = data.person.secondName;
+            nameField.text = data.person.name;
+            thirdNameField.text = data.person.thirdName;
+            phoneField.text = data.person.phone;
+            if(isNaN(data.person.birth) == false){
+                birthField.setVal(data.person.birth);
+            }
         }
+        open()
     }
 
     //var locDate;
@@ -31,15 +60,10 @@ Dialog{
     {
         targetIndex = row
         if(row === -1){
-            isNew = true;
-            nameBl = "New person"
-            PersonMapper.newData();
+            editPersonById(-1);
         }
         else{
-            isNew = false;
-            console.log(targetIndex)
-            nameBl = "Edit person"
-            PersonMapper.updateData(row)
+            editPersonById(PersonsModel.getId(row));
             //Не правильно получает данные
         }
         open()
@@ -98,20 +122,14 @@ Dialog{
                 text: qsTr("Birth day")
                 Layout.fillWidth: true
             }
-
-            TextField{
+            DateField{
                 id: birthField
                 Layout.preferredWidth: 300
-            }
-
-            BaseText{
-                text: qsTr("Birth day")
-                Layout.fillWidth: true
-            }
-            DateField{
-                id: birthField2
-                Layout.preferredWidth: 300
                 Layout.fillHeight: true
+                onSelected: {
+                    var tempDate = getVal();
+                    data.person.birth = tempDate;
+                }
             }
 
             BaseText{
@@ -172,22 +190,22 @@ Dialog{
 
 
         Component.onCompleted: {
-            PersonMapper.addMapping(nameField, (0x100 +2), "text")
-            PersonMapper.addMapping(secondNameField, (0x100 + 3), "text")
-            PersonMapper.addMapping(thirdNameField, (0x100 + 4), "text")
-            PersonMapper.addMapping(birthField, (0x100 + 5), "text")
-            PersonMapper.addMapping(phoneField, (0x100 + 6), "text")
+//            PersonMapper.addMapping(nameField, (0x100 +2), "text")
+//            PersonMapper.addMapping(secondNameField, (0x100 + 3), "text")
+//            PersonMapper.addMapping(thirdNameField, (0x100 + 4), "text")
+//            PersonMapper.addMapping(birthField, (0x100 + 5), "text")
+//            PersonMapper.addMapping(phoneField, (0x100 + 6), "text")
         }
     }
     //Эта ветвь при добавлении нового элемента
     function save()
     {
         //database.insertIntoTable(nameField.text, secondNameField.text, thirdNameField.text, phoneField.text, birthField.text);
-        PersonsModel.add(nameField.text, secondNameField.text, thirdNameField.text, birthField.text, phoneField.text);
+        PersonsModel.add(nameField.text, secondNameField.text, thirdNameField.text, data.person.birth.toLocaleString(Qt.locale(), "dd.MM.yyyy"), phoneField.text);
         PersonsModel.updateModel()
     }
     function updateElement(_index){
-        PersonsModel.updateElement(targetIndex, nameField.text, secondNameField.text, thirdNameField.text, birthField.text, phoneField.text)
+        PersonsModel.updateElement(targetIndex, nameField.text, secondNameField.text, thirdNameField.text, data.person.birth.toLocaleString(Qt.locale(), "dd.MM.yyyy"), phoneField.text)
         PersonsModel.updateModel()
     }
 }

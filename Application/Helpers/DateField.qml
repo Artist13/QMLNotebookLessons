@@ -19,7 +19,7 @@ Item {
 
     function setVal(dateVal){
         data.curDate = dateVal;
-        date.text = data.curDate.toLocaleString(Qt.locale(), "dd.MM.yyyy")
+        date.text = data.curDate.toLocaleString(Qt.locale(), "dd.MM.yyyy");
     }
     //---------------------------------------------------------------------
     TextField{
