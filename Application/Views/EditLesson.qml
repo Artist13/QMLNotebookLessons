@@ -24,20 +24,33 @@ Dialog{
     function create(targetDate){
         isNew = true;
         nameBl = "Добавить занятие";
+        setDefaulValue();
         locDate = targetDate;
-        setDeffaulValue();
+        date.setVal(locDate);
         open()
     }
 
-    function setDeffaulValue(){
-        locTime = new Date(0);
+    function setDefaulValue(){
+        setDefaultTime();
+        setDefaultDate();
+        setEmptySubject();
+        targetObject = Object.create(null);
+    }
+
+    function setDefaultDate(){
+        locDate = new Date();
+        date.setVal(locDate);
+    }
+
+    function setDefaultTime(){
+        locTime = new Date();
         locTime.setHours(12);
         locTime.setMinutes(0);
-        date.text = locDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy");
         time.setVal(locTime);
-        targetObject = Object.create(null);
-        targetObject.date = mergeDateAndTime();
-        targetObject.longs = longs.currentText;
+    }
+
+    function setEmptySubject(){
+        locSubject = Object.create(null);
         subjectID.text = "";
         subjectName.text = "";
     }
@@ -52,13 +65,12 @@ Dialog{
     //Очищаются ли поля
     //Нужно проработать mapper для использования с объектами, а не таблицами
     function editBylessonId(id){
+        setDefaulValue();
         targetIndex = id;
         targetObject = Object.create(LessonsModel.getLessonByID(id));
         if(id == -1){
             isNew = true;
             nameBl = "New lesson"
-            locDate = new Date();
-            setDeffaulValue();
         }else{
             isNew = false;
             nameBl = "Edit lesson"
@@ -74,13 +86,14 @@ Dialog{
                 locTime.setMinutes(locDate.getMinutes());
             }
             if(targetObject.subject !== null){
+                locSubject = targetObject.subject;
                 subjectID.text = targetObject.subject.ID;
                 subjectName.text = targetObject.subject.getFullName();
             }
             longs.currentIndex = longs.find(targetObject.longs.toString());
+            date.setVal(locDate);
+            time.setVal(locTime);
         }
-        date.setVal(locDate);
-        time.setVal(locTime);
         open()
     }
     function formateTime(hours, minutes){
@@ -264,10 +277,13 @@ Dialog{
         }
     }
     //Эта ветвь при добавлении нового элемента
-
+    //При сохранении локальные переменные переносятся в объект
+    //Можно использовать сам объект для хранения локальных данных, но структура не совсем совпадает
     function simpleSave(){
-        console.log(mergeDateAndTime());
+        console.log(locSubject.ID);
         targetObject.date = mergeDateAndTime();
+        targetObject.longs = longs.currentText;
+        targetObject.subject = locSubject;
         targetObject.save();
     }
 
@@ -301,9 +317,9 @@ Dialog{
         onAccepted: {
             var locIndex = listSubjects.choosenElement;
             var locSubjID = SubjectsModel.getId(locIndex);
-            targetObject.subject = SubjectsModel.getSubjectByID(locSubjID);
+            locSubject = SubjectsModel.getSubjectByID(locSubjID);
             subjectID.text = locSubjID;
-            subjectName.text = targetObject.subject.getFullName();
+            subjectName.text = locSubject.getFullName();
         }
     }
 

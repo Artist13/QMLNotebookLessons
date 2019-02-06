@@ -13,6 +13,19 @@ Dialog{
     property bool isNew: false
     property string nameBl: "Edit"
     property int targetIndex : -1
+    QtObject{
+        id: data
+        property var person: Object.create(null)
+    }
+
+    function editPersonById(id){
+        if(id == -1){
+            isNew = true;
+            nameBl = "Новый человек";
+
+        }
+    }
+
     //var locDate;
     function editEntry(row)
     {
@@ -89,6 +102,16 @@ Dialog{
             TextField{
                 id: birthField
                 Layout.preferredWidth: 300
+            }
+
+            BaseText{
+                text: qsTr("Birth day")
+                Layout.fillWidth: true
+            }
+            DateField{
+                id: birthField2
+                Layout.preferredWidth: 300
+                Layout.fillHeight: true
             }
 
             BaseText{
