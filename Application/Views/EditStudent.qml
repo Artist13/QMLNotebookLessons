@@ -28,10 +28,8 @@ Dialog{
             StudentMapper.updateData(row)
             personName.text = PersonsModel.getNameByID(personID.text);
             subjectName.text = SubjectsModel.getNameByID(subjectID.text);
-
-            //Не правильно получает данные
         }
-        open()
+        open();
     }
     contentItem: Rectangle{
         implicitHeight: 220

@@ -12,7 +12,7 @@ Dialog{
 
     property bool isNew: false
     property string nameBl: "Edit"
-    property int targetIndex : -1
+    property int targetIndex: -1
     QtObject{
         id: data
         property var person: Object.create(null)
@@ -22,7 +22,6 @@ Dialog{
         secondNameField.text = "";
         nameField.text = "";
         thirdNameField.text = "";
-
     }
 
     function setDefaultBirth(){
@@ -54,7 +53,7 @@ Dialog{
                 birthField.setVal(data.person.birth);
             }
         }
-        open()
+        open();
     }
 
     //var locDate;
@@ -200,5 +199,6 @@ Dialog{
 
     function savePerson(){
         data.person.save();
+        PersonsModel.updateModel();
     }
 }

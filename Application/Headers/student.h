@@ -9,9 +9,10 @@
 class Student : public QObject
 {
     Q_OBJECT
-//    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-//    Q_PROPERTY(int classNum READ classNum WRITE setClassNum NOTIFY classNumChanged)
-//    Q_PROPERTY(Subject subject READ subject WRITE setSubject NOTIFY subjectChanged)
+    Q_PROPERTY(QString name READ name)
+    Q_PROPERTY(Person* person READ person WRITE setPerson NOTIFY personChanged)
+    Q_PROPERTY(int classNum READ classNum WRITE setClassNum NOTIFY classNumChanged)
+    Q_PROPERTY(Subject* subject READ subject WRITE setSubject NOTIFY subjectChanged)
 public:
     explicit Student(QObject *parent = nullptr);
     Student(Person*, int, QString);
@@ -23,13 +24,15 @@ public:
     int getID() const;
 
     QString name() const;
-    void setPerson(const int &personID);
+
+    Person* person() const;
+    void setPerson(Person* pers);
 
     int classNum() const;
     void setClassNum(const int& ClassNum);
 
     Subject* subject() const;
-    void setSubject(const int &ID);
+    void setSubject(Subject* subj);
 
     void Save();
 signals:

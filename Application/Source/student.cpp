@@ -60,12 +60,17 @@ QString Student::name() const
     return _person->getStringName() + " " + _subject->getFullName();
 }
 
-void Student::setPerson(const int &personID)
+Person *Student::person() const
+{
+    return _person;
+}
+
+void Student::setPerson(Person *pers)
 {
     if(_person != nullptr)
-        if(_person->ID() == personID)
+        if(_person->ID() == pers->ID())
             return;
-    _person = new Person(personID);
+    _person = pers;
     emit personChanged();
 }
 
@@ -86,12 +91,12 @@ Subject *Student::subject() const
     return _subject;
 }
 
-void Student::setSubject(const int &ID)
+void Student::setSubject(Subject* subj)
 {
     if(_subject != nullptr)
-        if (_subject->getID() == ID)
+        if (_subject->getID() == subj->ID())
             return;
-    _subject = new Subject(ID);
+    _subject = subj;
     emit subjectChanged();
 }
 
@@ -148,9 +153,9 @@ StudentSQL::StudentSQL(Student *someSt)
 void StudentSQL::addElement(const int _person, const int _class, const QString _subject)
 {
     Student* tempStudent = new Student();
-    tempStudent->setPerson(_person);
+    tempStudent->setPerson(Person::getPerson(_person));
     tempStudent->setClassNum(_class);
-    tempStudent->setSubject(_subject.toInt());
+    tempStudent->setSubject(Subject::getSubject(_subject.toInt()));
     tempStudent->Save();
 }
 
@@ -235,9 +240,9 @@ void StudentSQL::updateElement(const int row, const int _person, const int _clas
     int locID = getId(row);
 
     Student* tempStudent = new Student(locID);
-    tempStudent->setPerson(_person);
+    tempStudent->setPerson(Person::getPerson(_person));
     tempStudent->setClassNum(_class);
-    tempStudent->setSubject(_subject.toInt());
+    tempStudent->setSubject(Subject::getSubject(_subject.toInt()));
     tempStudent->Save();
 }
 
