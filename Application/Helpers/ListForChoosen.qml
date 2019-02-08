@@ -6,6 +6,7 @@ import QtQuick.Window 2.2
 
 Item {
     property var shownModel
+    property var editBlank
     visible: true
     function getChoosen(){
         return choosenElement;
@@ -21,21 +22,21 @@ Item {
         anchors.margins: 5
 
         height: 35
+        //Это бланк только для выбора тут добавлять не надо
+//        Button{
+//            id: addBut
+//            text: qsTr("Add")
 
-        Button{
-            id: addBut
-            text: qsTr("Add")
+//            width: 150
 
-            width: 150
+//            Layout.fillHeight: true
 
-            Layout.fillHeight: true
-
-            onClicked: {
-                var component = Qt.createComponent("EditStudent.qml");
-                var obj = component.createObject(parent);
-                obj.editEntry(-1)
-            }
-        }
+//            onClicked: {
+//                var component = Qt.createComponent("EditStudent.qml");
+//                var obj = component.createObject(parent);
+//                obj.editEntry(-1)
+//            }
+//        }
     }
 
     Component{
@@ -87,11 +88,11 @@ Item {
                         break
                     }
                 }
-
+                //Нужно передавать бланк редактор
+                //Должен получаться через какую-либо зависимость
+                //Например свойство
                 onDoubleClicked: {
-                    var component = Qt.createComponent("EditStudent.qml");
-                    var obj = component.createObject(parent);
-                    obj.editEntry(index)
+                    editBlank.editEntry(index)
                 }
 
             }

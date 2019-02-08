@@ -301,9 +301,17 @@ Dialog{
         }
         //Нужно унифицировать. Вид общий разная только модель и бланк редактор.
         //В форме выбора бланк редактор можно опустить
-        SubjectListView{
+        ListForChoosen{
+            //var component = Qt.createComponent("EditStudent.qml");
+            //var obj = component.createObject(parent);
+            shownModel: SubjectsModel
             id: listSubjects
             anchors.fill: parent
+            Component.onCompleted: {
+                var component = Qt.createComponent("EditSubject.qml");
+                var obj = component.createObject(parent);
+                editBlank = obj;
+            }
         }
 
         onVisibleChanged: {
