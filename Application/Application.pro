@@ -13,6 +13,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 SUBDIRS += \
     Headers \
+    Base \
     Source \
     Views
 SOURCES += \
@@ -30,7 +31,8 @@ SOURCES += \
     Source/subject.cpp \
     Source/visit.cpp \
     Source/event.cpp \
-    Source/sqleventmodel.cpp
+    Source/sqleventmodel.cpp \
+    Base/customrecord.cpp
 
 RESOURCES += qml.qrc
 
@@ -60,6 +62,7 @@ HEADERS += \
     Headers/visit.h \
     Headers/qmldatamapper.h \
     Headers/event.h \
-    Headers/sqleventmodel.h
+    Headers/sqleventmodel.h \
+    Base/customrecord.h
 
 DISTFILES +=

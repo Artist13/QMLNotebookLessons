@@ -28,5 +28,6 @@
         <file>Helpers/TimeField.qml</file>
         <file>Helpers/BaseText.qml</file>
         <file>Helpers/DateField.qml</file>
+        <file>Helpers/ListForChoosen.qml</file>
     </qresource>
 </RCC>

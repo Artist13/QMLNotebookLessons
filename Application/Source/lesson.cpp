@@ -161,11 +161,6 @@ void Lesson::remove()
     _ID = -1;
 }
 
-int Lesson::getID() const
-{
-    return _ID;
-}
-
 void Lesson::LoadStudents()
 {
     //Нужна проверка на то, что ID указан
@@ -289,6 +284,7 @@ QList<QObject *> LessonModel::lessonsList(const QDate &date)
     }
     QList<QObject*> lessons;
     while(query.next()){
+        qDebug() << "Заменить ручное создание на стандартное!!!";
         Lesson* lesson = new Lesson(this);
         lesson->setID(query.value(FIELD_ID).toInt());
         QDateTime locDateTime = query.value(FIELD_DATE).toDateTime();

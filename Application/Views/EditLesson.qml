@@ -299,7 +299,8 @@ Dialog{
         function getChoosen(){
             return listSubjects.getChoosen();
         }
-
+        //Нужно унифицировать. Вид общий разная только модель и бланк редактор.
+        //В форме выбора бланк редактор можно опустить
         SubjectListView{
             id: listSubjects
             anchors.fill: parent

@@ -39,7 +39,7 @@ Lesson *Visit::lesson() const
 void Visit::setLesson(const int &lessonId)
 {
     if(_lesson != nullptr)
-        if(_lesson->getID() == lessonId)
+        if(_lesson->ID() == lessonId)
             return;
     _lesson = new Lesson(lessonId);
     emit lessonChanged();
@@ -53,7 +53,7 @@ Student *Visit::student() const
 void Visit::setStudent(const int &studentId)
 {
     if(_student != nullptr)
-        if(_student->getID() == studentId)
+        if(_student->ID() == studentId)
             return;
     _student = new Student(studentId);
     emit studentChanged();
@@ -77,8 +77,8 @@ void Visit::CreateNewRecord()
     QSqlQuery query;
 
     query.prepare("INSERT INTO " TABLE_VISITS " (" FIELD_LESSON ", " FIELD_STUDENT ") VALUES (:lesson, :subject)");
-    query.bindValue(":lesson", _lesson->getID());
-    query.bindValue(":subject", _student->getID());
+    query.bindValue(":lesson", _lesson->ID());
+    query.bindValue(":subject", _student->ID());
     if(!query.exec())
     {
         qDebug() << "error insert into " TABLE_VISITS;
@@ -92,8 +92,8 @@ void Visit::UpdateRecord()
     query.prepare("UPDATE " TABLE_VISITS
                   " SET " FIELD_LESSON " = :lesson, " FIELD_STUDENT " = :student  WHERE id = :ID;");
     query.bindValue(":ID", _ID);
-    query.bindValue(":lesson", _lesson->getID());
-    query.bindValue(":student", _student->getID());
+    query.bindValue(":lesson", _lesson->ID());
+    query.bindValue(":student", _student->ID());
     if(!query.exec())
     {
         qDebug() << "error update " << TABLE_VISITS;

@@ -7,10 +7,11 @@
 #include <QList>
 #include "database.h"
 #include "dbconsts.h"
+#include "Base/customrecord.h"
 
 #include <QObject>
 
-class Subject : public QObject
+class Subject : public CustomRecord
 {
     Q_OBJECT
     Q_PROPERTY(int ID READ ID WRITE setID NOTIFY IDChanged)
@@ -22,7 +23,7 @@ public:
     Subject(Subject& _other);
     static Subject* getSubject(const int &ID);
 
-    Subject operator=(Subject& _other);
+    Subject& operator=(Subject& _other);
 
     int ID() const;
     void setID(const int &id);
@@ -39,6 +40,8 @@ public:
     Q_INVOKABLE QString getFullName() const;
 
     ~Subject();
+
+    QString nameForList() const;
 signals:
     void IDChanged();
     void nameChanged();
@@ -88,6 +91,7 @@ public slots:
     void updateElement(const int row, const QString _name, const QString _classNum);
     QString getNameByID(const int ID) const;
     QObject* getSubjectByID(const int ID);
+    QList<QObject*> getObjectsModel();
 };
 
 #endif // SUBJECT_H

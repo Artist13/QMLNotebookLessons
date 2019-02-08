@@ -45,7 +45,6 @@ public:
     Q_INVOKABLE void save();
     Q_INVOKABLE void remove();
     //void Save();
-    int getID() const;
 signals:
     void dateChanged();
     void subjectChanged();

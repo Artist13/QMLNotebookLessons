@@ -2,7 +2,7 @@
 
 
 
-Subject::Subject(QObject *parent) : QObject(parent), Classes{"9","11"}
+Subject::Subject(QObject *parent) : CustomRecord(parent), Classes{"9","11"}
 {
     _ID = -1;
     _Name = "New Subject";
@@ -30,7 +30,7 @@ Subject::Subject(const int &ID)
 
 }
 
-Subject::Subject(Subject &_other)
+Subject::Subject(Subject &_other) : CustomRecord()
 {
     _ID = _other.ID();
     _Name = _other.name();
@@ -57,7 +57,7 @@ Subject *Subject::getSubject(const int &ID)
     }
 }
 
-Subject Subject::operator=(Subject &_other)
+Subject& Subject::operator=(Subject &_other)
 {
     _ID = _other.ID();
     _Name = _other.name();
@@ -124,6 +124,11 @@ QString Subject::getFullName() const
 Subject::~Subject()
 {
 
+}
+
+QString Subject::nameForList() const
+{
+    return getFullName();
 }
 
 void Subject::CreateNewRecord() const
@@ -256,4 +261,20 @@ QString SubjectModel::getNameByID(const int ID) const
 QObject *SubjectModel::getSubjectByID(const int ID)
 {
     return Subject::getSubject(ID);
+}
+
+QList<QObject *> SubjectModel::getObjectsModel()
+{
+    QSqlQuery query;
+    query.prepare("SELECT ID FROM " TABLE_SUBJECTS);
+    if(!query.exec())
+    {
+        qDebug() << "error in " TABLE_SUBJECTS;
+        qDebug() << query.lastError().text();
+    }
+    QList<QObject*> subjects;
+    while(query.next()){
+        subjects.append(new Subject(query.value(FIELD_ID).toInt()));
+    }
+    return subjects;
 }

@@ -50,7 +50,13 @@ Student::~Student()
     delete _person;
 }
 
-int Student::getID() const
+void Student::setID(const int id)
+{
+    _ID = id;
+    emit IDChanged();
+}
+
+int Student::ID() const
 {
     return _ID;
 }

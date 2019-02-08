@@ -9,6 +9,7 @@
 class Student : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(int ID READ ID WRITE setID NOTIFY IDChanged)
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(Person* person READ person WRITE setPerson NOTIFY personChanged)
     Q_PROPERTY(int classNum READ classNum WRITE setClassNum NOTIFY classNumChanged)
@@ -21,7 +22,8 @@ public:
     static Student* getStudent(const int ID);
     ~Student();
 
-    int getID() const;
+    int ID() const;
+    void setID(const int id);
 
     QString name() const;
 
@@ -36,6 +38,7 @@ public:
 
     void Save();
 signals:
+    void IDChanged();
     void classNumChanged();
     void subjectChanged();
     void personChanged();
