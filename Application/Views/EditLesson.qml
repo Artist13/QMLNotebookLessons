@@ -319,10 +319,11 @@ Dialog{
         }
 
         onAccepted: {
-            var locIndex = listSubjects.choosenElement;
-            var locSubjID = SubjectsModel.getId(locIndex);
-            locSubject = SubjectsModel.getSubjectByID(locSubjID);
-            subjectID.text = locSubjID;
+            //Могу возвращать сразу объект
+            //var locIndex = listSubjects.choosenElement;
+            //var locSubjID = SubjectsModel.getId(locIndex);
+            locSubject = listSubjects.choosenElement;//SubjectsModel.getSubjectByID(locSubjID);
+            subjectID.text = locSubject.ID;
             subjectName.text = locSubject.getFullName();
         }
     }

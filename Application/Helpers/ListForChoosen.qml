@@ -4,7 +4,20 @@ import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 import QtQuick.Window 2.2
 
+//Общий список для моделей объектов CustomRecord
+//shownModel - отображаемая модель
+//editBlank - бланк редактор для этих объектов
+
+//Необходимо реализовать
+//Возможности для редактирования и добавления должны быть доступны в соответствии с установленными флагами
+
 Item {
+    //not in use
+    property bool canAdd : false
+    property bool canEdit: false
+    property bool canRemove: false
+    //--------------
+
     property var shownModel
     property var editBlank
     visible: true
@@ -12,7 +25,7 @@ Item {
         return choosenElement;
     }
 
-    property int choosenElement : 0
+    property var choosenElement
 
     RowLayout{
         id: row
@@ -22,7 +35,7 @@ Item {
         anchors.margins: 5
 
         height: 35
-        //Это бланк только для выбора тут добавлять не надо
+        //Это бланк только для выбора тут добавлять не надо. Вовсяком случае пока
 //        Button{
 //            id: addBut
 //            text: qsTr("Add")
@@ -69,6 +82,7 @@ Item {
                 anchors.fill: parent
                 //color: "blue"
                 id: someText
+                //Объекты представленные в этом списке должны реализовывать CustomRecord
                 text: qsTr(modelData.nameForList)
                 verticalAlignment: Text.AlignVCenter
                 //horizontalAlignment: Text.AlignHCenter
@@ -84,7 +98,7 @@ Item {
                         break
                     default:
                         listView.currentIndex = index
-                        choosenElement = index
+                        choosenElement = listView.model[index]
                         break
                     }
                 }
@@ -97,6 +111,10 @@ Item {
 
             }
         }
+        Component.onCompleted: {
+            choosenElement = listView.model[listView.currentIndex];
+        }
+
         highlight: Rectangle {color: "lightsteelblue"; radius: 5}
 
     }
