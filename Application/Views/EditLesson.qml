@@ -185,7 +185,9 @@ Dialog{
 
             ChoosenField{
                 id: subject
-                shownModel: SubjectsModel
+                innerList{
+                    shownModel: SubjectsModel
+                }
                 Layout.columnSpan: 2
                 Layout.preferredWidth: 300
                 Layout.fillHeight: true
@@ -194,38 +196,6 @@ Dialog{
                     locSubject = tempVal;
                 }
             }
-
-//            TextField{
-//                id: subjectID
-//                visible: false
-//                Layout.preferredWidth: 300
-//                Layout.columnSpan: 2
-
-//            }
-
-
-
-//            TextField{
-//                id: subjectName
-//                readOnly: true
-//                Layout.preferredWidth: 200
-//                MouseArea{
-//                    anchors.fill: parent
-//                    onClicked: {
-//                        listSubjectsForChoose.open();
-//                    }
-//                }
-//            }
-
-//            Button{
-//                id: chooseSubject
-//                Layout.preferredWidth: 90
-//                text: qsTr("Выбрать")
-
-//                onClicked: {
-//                    listSubjectsForChoose.open();
-//                }
-//            }
 
             BaseText{
                 text: qsTr("Длительность")

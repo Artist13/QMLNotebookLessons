@@ -26,12 +26,7 @@ Item {
         id: data
         property var curObject
     }
-    //Дублирую свойства. Не знаю как создать свой делегат
-    property var shownModel
-    property var blank
-    property bool canAdd: false
-    property bool canEdit: false
-    property bool canRemove: false
+    property alias innerList : listElements
 
     signal changed()
 
@@ -59,14 +54,6 @@ Item {
         }
     }
     //Инициализируем список т.к. не знаю как использовать делегат
-    Component.onCompleted: {
-        listElements.shownModel = shownModel;
-        listElements.editBlank = blank;
-        listElements.canAdd = canAdd
-        listElements.canEdit = canEdit
-        listElements.canRemove = canRemove
-        console.log(shownModel.length);
-    }
 
     Dialog{
         id: dialogElements
