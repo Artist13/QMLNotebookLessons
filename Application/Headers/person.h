@@ -6,10 +6,11 @@
 #include <QSqlQueryModel>
 #include <QList>
 #include "database.h"
+#include "Base/customrecord.h"
 
 #include <QObject>
 
-class Person : public QObject
+class Person : public CustomRecord
 {
     Q_OBJECT
     Q_PROPERTY(int ID READ ID WRITE setID NOTIFY IDChanged)
@@ -44,6 +45,8 @@ public:
 
     QString phone() const;
     void setPhone(const QString &phone);
+
+    QString nameForList() const;
 
     Q_INVOKABLE void save();
     Q_INVOKABLE void remove();
@@ -103,6 +106,8 @@ public slots:
     QString getNameByID(const int ID);
     QObject* getByID(const int ID);
     QObject* newPerson();
+
+    QList<QObject *>getObjectsModel();
 };
 
 

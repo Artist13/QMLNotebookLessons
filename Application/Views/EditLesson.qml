@@ -51,8 +51,9 @@ Dialog{
 
     function setEmptySubject(){
         locSubject = Object.create(null);
-        subjectID.text = "";
-        subjectName.text = "";
+        subject.setVal(locSubject);
+        //subjectID.text = "";
+        //subjectName.text = "";
     }
 
     function mergeDateAndTime(){
@@ -82,8 +83,9 @@ Dialog{
             }
             if(targetObject.subject !== null){
                 locSubject = targetObject.subject;
-                subjectID.text = targetObject.subject.ID;
-                subjectName.text = targetObject.subject.getFullName();
+                //subjectID.text = targetObject.subject.ID;
+                //subjectName.text = targetObject.subject.getFullName();
+                subject.setVal(targetObject.subject);
             }
             longs.currentIndex = longs.find(targetObject.longs.toString());
             date.setVal(locDate);
@@ -181,35 +183,49 @@ Dialog{
                 Layout.fillWidth: true
             }
 
-            TextField{
-                id: subjectID
-                visible: false
-                Layout.preferredWidth: 300
+            ChoosenField{
+                id: subject
+                shownModel: SubjectsModel
                 Layout.columnSpan: 2
-
-            }
-
-            TextField{
-                id: subjectName
-                readOnly: true
-                Layout.preferredWidth: 200
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: {
-                        listSubjectsForChoose.open();
-                    }
+                Layout.preferredWidth: 300
+                Layout.fillHeight: true
+                onChanged: {
+                    var tempVal = getVal();
+                    locSubject = tempVal;
                 }
             }
 
-            Button{
-                id: chooseSubject
-                Layout.preferredWidth: 90
-                text: qsTr("Выбрать")
+//            TextField{
+//                id: subjectID
+//                visible: false
+//                Layout.preferredWidth: 300
+//                Layout.columnSpan: 2
 
-                onClicked: {
-                    listSubjectsForChoose.open();
-                }
-            }
+//            }
+
+
+
+//            TextField{
+//                id: subjectName
+//                readOnly: true
+//                Layout.preferredWidth: 200
+//                MouseArea{
+//                    anchors.fill: parent
+//                    onClicked: {
+//                        listSubjectsForChoose.open();
+//                    }
+//                }
+//            }
+
+//            Button{
+//                id: chooseSubject
+//                Layout.preferredWidth: 90
+//                text: qsTr("Выбрать")
+
+//                onClicked: {
+//                    listSubjectsForChoose.open();
+//                }
+//            }
 
             BaseText{
                 text: qsTr("Длительность")
@@ -311,6 +327,9 @@ Dialog{
                 var component = Qt.createComponent("EditSubject.qml");
                 var obj = component.createObject(parent);
                 editBlank = obj;
+            }
+            onSelected: {
+                listSubjectsForChoose.accept();
             }
         }
 

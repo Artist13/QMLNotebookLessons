@@ -29,5 +29,6 @@
         <file>Helpers/BaseText.qml</file>
         <file>Helpers/DateField.qml</file>
         <file>Helpers/ListForChoosen.qml</file>
+        <file>Helpers/ChoosenField.qml</file>
     </qresource>
 </RCC>

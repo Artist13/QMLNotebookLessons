@@ -1,16 +1,16 @@
 #include "Headers/student.h"
 
-Student::Student(QObject *parent) : QObject(parent)
+Student::Student(QObject *parent) : CustomRecord(parent)
 {
     _ID = -1;
 }
 
-Student::Student(Person *, int, QString)
+Student::Student(Person *, int, QString) : CustomRecord ()
 {
     _ID = -1;
 }
 
-Student::Student(const int &ID)
+Student::Student(const int &ID) : CustomRecord ()
 {
     QSqlQuery query;
     query.prepare("SELECT * FROM " TABLE_STUDENTS " WHERE " FIELD_ID " =  :ID");
@@ -104,6 +104,11 @@ void Student::setSubject(Subject* subj)
             return;
     _subject = subj;
     emit subjectChanged();
+}
+
+QString Student::nameForList() const
+{
+    return name();
 }
 
 void Student::Save()
@@ -264,5 +269,20 @@ QString StudentSQL::getStringViewById(const int id)
 {
     Student* tempStudent = new Student(id);
     return tempStudent->name();
+}
+
+QList<QObject *> StudentSQL::getObjectsModel()
+{
+    QSqlQuery query;
+    query.prepare("SELECT ID FROM " TABLE_STUDENTS);
+    if(!query.exec()){
+        qDebug() << "Error in table " TABLE_STUDENTS;
+        qDebug() << query.lastError().text();
+    }
+    QList<QObject*> students;
+    while(query.next()){
+        students.append(new  Student(query.value(FIELD_ID).toInt()));
+    }
+    return students;
 }
 

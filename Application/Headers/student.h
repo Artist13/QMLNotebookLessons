@@ -5,8 +5,10 @@
 #include "person.h"
 #include "subject.h"
 
+#include "Base/customrecord.h"
 
-class Student : public QObject
+
+class Student : public CustomRecord
 {
     Q_OBJECT
     Q_PROPERTY(int ID READ ID WRITE setID NOTIFY IDChanged)
@@ -35,6 +37,8 @@ public:
 
     Subject* subject() const;
     void setSubject(Subject* subj);
+
+    QString nameForList() const;
 
     void Save();
 signals:
@@ -84,6 +88,8 @@ public Q_SLOTS:
     void updateElement(const int row, const int _person, const int _class, const QString _subject);
     QString getStringView(const int row);
     QString getStringViewById(const int id);
+
+    QList<QObject*> getObjectsModel();
 };
 
 #endif // STUDENT_H

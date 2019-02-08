@@ -1,7 +1,6 @@
 #ifndef LESSON_H
 #define LESSON_H
 
-#include <QString>
 #include <QDate>
 #include <QSqlQueryModel>
 #include <QList>
@@ -11,9 +10,10 @@
 #include "visit.h"
 #include "subject.h"
 #include "student.h"
+#include "Base/customrecord.h"
 
 //Объект для работы с занятием. Есть куски более низкого слоя(SQL запросы)
-class Lesson : public QObject
+class Lesson : public CustomRecord
 {
     Q_OBJECT
     Q_PROPERTY(int ID READ ID WRITE setID NOTIFY IDChanged)
@@ -40,7 +40,8 @@ public:
     void setLongs(const double &longs);
     QString name() const;
 
-    QString StringView();
+    QString StringView() const;
+    QString nameForList() const;
 
     Q_INVOKABLE void save();
     Q_INVOKABLE void remove();
@@ -107,6 +108,8 @@ public Q_SLOTS:
     QObject *getLessonByID(const int id);
     QObject *getLessonByRow(const int row);
     void removeById(const int ID);
+    //Для представления в виде списка объектов
+    QList<QObject*> getObjectsModel();
 
 };
 

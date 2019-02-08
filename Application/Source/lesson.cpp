@@ -1,6 +1,6 @@
 #include "Headers/lesson.h"
 
-Lesson::Lesson(QObject *parent) : QObject(parent)
+Lesson::Lesson(QObject *parent) : CustomRecord(parent)
 {
     _ID = -1;
     _date = QDateTime();
@@ -8,7 +8,7 @@ Lesson::Lesson(QObject *parent) : QObject(parent)
     _subj = nullptr;
 }
 
-Lesson::Lesson(const int &ID)
+Lesson::Lesson(const int &ID) : CustomRecord()
 {
     Init(ID);
 }
@@ -24,12 +24,12 @@ Lesson *Lesson::getLesson(const int ID)
     if(query.isValid()){
         //Все данные заполнятся в конструкторе зачем их переписывать
         auto locLesson = new Lesson(ID);
-        locLesson->setID(ID);
-        locLesson->setDate(query.value(FIELD_DATE).toDateTime());
-        locLesson->setLongs(query.value(FIELD_LONG).toDouble());
-        auto tempSubj = Subject::getSubject(query.value(FIELD_SUBJECT).toInt());
-        locLesson->setSubject(tempSubj);
-        locLesson->LoadStudents();
+//        locLesson->setID(ID);
+//        locLesson->setDate(query.value(FIELD_DATE).toDateTime());
+//        locLesson->setLongs(query.value(FIELD_LONG).toDouble());
+//        auto tempSubj = Subject::getSubject(query.value(FIELD_SUBJECT).toInt());
+//        locLesson->setSubject(tempSubj);
+//        locLesson->LoadStudents();
         return locLesson;
     }else{
         return nullptr;
@@ -120,9 +120,14 @@ QString Lesson::name() const
 }
 
 
-QString Lesson::StringView()
+QString Lesson::StringView() const
 {
     return _date.toString("dd.MM.yyyy") + " " + _subj->getFullName();
+}
+
+QString Lesson::nameForList() const
+{
+    return StringView();
 }
 
 void Lesson::save()
@@ -323,6 +328,21 @@ void LessonModel::removeById(const int ID)
     if(tempLesson == nullptr)//WARNING!!!! ERROR try to delete unexistence record
         return;
     tempLesson->remove();
+}
+
+QList<QObject *> LessonModel::getObjectsModel()
+{
+    QSqlQuery query;
+    query.prepare("SELECT ID FROM " TABLE_LESSONS);
+    if(!query.exec()){
+        qDebug() << "Error in table " TABLE_LESSONS;
+        qDebug() << query.lastError().text();
+    }
+    QList<QObject*> lessons;
+    while(query.next()){
+        lessons.append(new  Lesson(query.value(FIELD_ID).toInt()));
+    }
+    return lessons;
 }
 
 LessonModel::LessonModel(QObject *parent) : QSqlQueryModel (parent)

@@ -3,7 +3,7 @@
 
 
 
-Person::Person()
+Person::Person() : CustomRecord()
 {
     _ID = -1;
 }
@@ -13,7 +13,7 @@ Person::Person(const QString _name, const QString _secName, const QString _thNam
     _ID = -1;
 }
 
-Person::Person(const int &ID)
+Person::Person(const int &ID) : CustomRecord()
 {
     QSqlQuery query;
     query.prepare("SELECT * FROM " TABLE_PERSONS " WHERE " FIELD_ID " =  :ID");
@@ -133,6 +133,11 @@ void Person::setPhone(const QString &phone)
         return;
     _phone = phone;
     emit phoneChanged();
+}
+
+QString Person::nameForList() const
+{
+    return _secondName + " " + _name + " " + _thirdName;
 }
 
 void Person::save()
@@ -305,6 +310,21 @@ QObject *PersonModel::getByID(const int ID)
 QObject *PersonModel::newPerson()
 {
     return new Person();
+}
+
+QList<QObject*> PersonModel::getObjectsModel()
+{
+    QSqlQuery query;
+    query.prepare("SELECT ID FROM " TABLE_PERSONS);
+    if(!query.exec()){
+        qDebug() << "Error in table " TABLE_PERSONS;
+        qDebug() << query.lastError().text();
+    }
+    QList<QObject*> persons;
+    while(query.next()){
+        persons.append(new  Person(query.value(FIELD_ID).toInt()));
+    }
+    return persons;
 }
 
 QHash<int, QByteArray> PersonModel::roleNames() const

@@ -12,14 +12,14 @@ import QtQuick.Window 2.2
 //Возможности для редактирования и добавления должны быть доступны в соответствии с установленными флагами
 
 Item {
-    //not in use
     property bool canAdd : false
-    property bool canEdit: false
+    property bool canEdit: false //not in use
     property bool canRemove: false
-    //--------------
 
     property var shownModel
     property var editBlank
+
+    signal selected()
     visible: true
     function getChoosen(){
         return choosenElement;
@@ -36,22 +36,22 @@ Item {
 
         height: 35
         //Это бланк только для выбора тут добавлять не надо. Вовсяком случае пока
-//        Button{
-//            id: addBut
-//            text: qsTr("Add")
+        Button{
+            id: addBut
+            text: qsTr("Add")
 
-//            width: 150
+            width: 150
+            visible: canAdd
 
-//            Layout.fillHeight: true
+            Layout.fillHeight: true
 
-//            onClicked: {
-//                var component = Qt.createComponent("EditStudent.qml");
-//                var obj = component.createObject(parent);
-//                obj.editEntry(-1)
-//            }
-//        }
+            onClicked: {
+                editBlank.editEntry(-1)
+            }
+        }
     }
-
+    //Это кажется для подсветки, которая некорректно работает
+    //Нужно поправить
     Component{
         id: personDelegate
         Rectangle{
@@ -97,8 +97,8 @@ Item {
                         //contextMenu.popup()
                         break
                     default:
-                        listView.currentIndex = index
-                        choosenElement = listView.model[index]
+                        listView.currentIndex = index;
+                        choosenElement = listView.model[index];
                         break
                     }
                 }
@@ -106,7 +106,13 @@ Item {
                 //Должен получаться через какую-либо зависимость
                 //Например свойство
                 onDoubleClicked: {
-                    editBlank.editEntry(index)
+                    listView.currentIndex = index;
+                    if(canEdit){
+                        editBlank.editEntry(index);
+                    }else{
+                        choosenElement = listView.model[index];
+                        selected();
+                    }
                 }
 
             }
