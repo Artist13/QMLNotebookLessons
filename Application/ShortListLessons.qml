@@ -80,7 +80,8 @@ Rectangle{
                     }
                 }
                 onDoubleClicked: {
-                    lessonEditer.editBylessonId(parent.lessonId);
+                    lessonEditor.source = "Views/EditLesson.qml"
+                    lessonEditor.item.editBylessonId(parent.lessonId);
                 }
             }
         }
@@ -124,11 +125,14 @@ Rectangle{
             width: 35
             Layout.fillHeight: true
             onClicked: {
-                lessonEditer.create(connectedCalendar.selectedDate);
+                //lessonEditer.create(connectedCalendar.selectedDate);
+                lessonEditor.source = "Views/EditLesson.qml"
+                lessonEditor.item.create(connectedCalendar.selectedDate);
             }
         }
     }
-    EditLesson{
-        id: lessonEditer;
+
+    Loader{
+        id: lessonEditor
     }
 }

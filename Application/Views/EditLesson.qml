@@ -183,8 +183,6 @@ Dialog{
                 Layout.preferredWidth: 300
                 Layout.fillHeight: true
                 onChanged: {
-                    console.log(getVal());
-                    console.log(data.targetObject);
                     var tempSubj = getVal();
                     data.targetObject.subject = tempSubj;
                 }

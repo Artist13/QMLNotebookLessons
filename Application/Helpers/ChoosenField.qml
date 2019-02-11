@@ -87,7 +87,7 @@ Item {
         }
 
         onAccepted: {
-            mainObject.setVal(listElements.choosenElement);//SubjectsModel.getSubjectByID(locSubjID);
+            mainObject.setVal(listElements.choosenElement);
         }
     }
 
