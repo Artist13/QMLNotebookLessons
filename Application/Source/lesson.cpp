@@ -330,6 +330,11 @@ void LessonModel::removeById(const int ID)
     tempLesson->remove();
 }
 
+QObject *LessonModel::newLesson()
+{
+    return new Lesson();
+}
+
 QList<QObject *> LessonModel::getObjectsModel()
 {
     QSqlQuery query;

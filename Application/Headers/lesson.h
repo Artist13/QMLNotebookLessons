@@ -108,6 +108,7 @@ public Q_SLOTS:
     QObject *getLessonByID(const int id);
     QObject *getLessonByRow(const int row);
     void removeById(const int ID);
+    QObject* newLesson();
     //Для представления в виде списка объектов
     QList<QObject*> getObjectsModel();
 

@@ -13,53 +13,57 @@ Dialog{
     height: 440
     width: 480
 
+    QtObject{
+        id: data;
+        property int targetIndex : -1
+        property var targetObject;
+        property var locDate;//Дублирует данные из модели занятия //Пока не обрабатываются моменты когда объек = undefined
+        property var locTime;
+    }
+
     property bool isNew: false
     property string nameBl: "Edit"
-    property int targetIndex : -1
-    property var targetObject;
-    property var locSubject;
-    property var locDate;//Дублирует данные из модели занятия //Пока не обрабатываются моменты когда объек = undefined
-    property var locTime;
 
     function create(targetDate){
         isNew = true;
         nameBl = "Добавить занятие";
         setDefaulValue();
-        locDate = targetDate;
-        date.setVal(locDate);
-        open()
+        data.locDate = targetDate;
+        date.setVal(data.locDate);
+        data.targetObject = LessonsModel.newLesson();
+        editBylessonId(-1);
     }
 
     function setDefaulValue(){
         setDefaultTime();
         setDefaultDate();
         setEmptySubject();
-        targetObject = Object.create(null);
+        //data.targetObject = Object.create(null);
     }
 
     function setDefaultDate(){
-        locDate = new Date();
-        date.setVal(locDate);
+        data.locDate = new Date();
+        date.setVal(data.locDate);
     }
 
     function setDefaultTime(){
-        locTime = new Date();
-        locTime.setHours(12);
-        locTime.setMinutes(0);
-        time.setVal(locTime);
+        data.locTime = new Date();
+        data.locTime.setHours(12);
+        data.locTime.setMinutes(0);
+        time.setVal(data.locTime);
     }
 
     function setEmptySubject(){
-        locSubject = Object.create(null);
-        subject.setVal(locSubject);
+        //data.locSubject = Object.create(null);
+        subject.setVal(Object.create(null));
         //subjectID.text = "";
         //subjectName.text = "";
     }
 
     function mergeDateAndTime(){
-        var tempDate = locDate;
-        tempDate.setHours(locTime.getHours());
-        tempDate.setMinutes(locTime.getMinutes());
+        var tempDate = data.locDate;
+        tempDate.setHours(data.locTime.getHours());
+        tempDate.setMinutes(data.locTime.getMinutes());
         return tempDate;
     }
 
@@ -67,41 +71,31 @@ Dialog{
     //Нужно проработать mapper для использования с объектами, а не таблицами
     function editBylessonId(id){
         setDefaulValue();
-        targetIndex = id;
-        targetObject = Object.create(LessonsModel.getLessonByID(id));
+        data.targetIndex = id;
+        //data.targetObject = Object.create(LessonsModel.getLessonByID(id));
         if(id == -1){
             isNew = true;
-            nameBl = "New lesson"
+            nameBl = "New lesson";
+            data.targetObject = LessonsModel.newLesson();
         }else{
             isNew = false;
             nameBl = "Edit lesson"
-            if(isNaN(targetObject.date) == false){
-                locDate = targetObject.date
-                locTime = new Date;
-                locTime.setHours(locDate.getHours());
-                locTime.setMinutes(locDate.getMinutes());
+            data.targetObject = Object.create(LessonsModel.getLessonByID(id));
+            if(isNaN(data.targetObject.date) == false){
+                data.locDate = data.targetObject.date;
+                data.locTime = new Date;
+                data.locTime.setHours(data.locDate.getHours());
+                data.locTime.setMinutes(data.locDate.getMinutes());
             }
-            if(targetObject.subject !== null){
-                locSubject = targetObject.subject;
-                //subjectID.text = targetObject.subject.ID;
-                //subjectName.text = targetObject.subject.getFullName();
-                subject.setVal(targetObject.subject);
+            if(data.targetObject.subject !== null){
+                //data.locSubject = data.targetObject.subject;
+                subject.setVal(data.targetObject.subject);
             }
-            longs.currentIndex = longs.find(targetObject.longs.toString());
-            date.setVal(locDate);
-            time.setVal(locTime);
+            longs.currentIndex = longs.find(data.targetObject.longs.toString());
+            date.setVal(data.locDate);
+            time.setVal(data.locTime);
         }
-        open()
-    }
-    function formateTime(hours, minutes){
-        return addZeros(hours) + ":" + addZeros(minutes);
-    }
-    function addZeros(val){
-        val = val + "";
-        while(val.length < 2){
-            val = "0" + val;
-        }
-        return val;
+        open();
     }
 
     //Изначально работа велась с моделью, в которой известен номер строки
@@ -113,13 +107,10 @@ Dialog{
         targetIndex = row
         if(row === -1){
             editBylessonId(-1);
-            //visiters.openWithFilter(-1)
         }
         else{
             editBylessonId(LessonsModel.getId(row));
         }
-
-        //open()
     }
 
     contentItem: Rectangle{
@@ -132,7 +123,6 @@ Dialog{
         readonly property int fontSize: 16
         color: baseBGColor
 
-        property var tempDate: new Date();
         GridLayout{
             anchors.top: parent.top
             anchors.left: parent.left
@@ -150,14 +140,14 @@ Dialog{
                 Layout.fillWidth: true
             }
 
-
             DateField{
                 id: date
                 Layout.columnSpan: 2
                 Layout.preferredWidth: 300
                 Layout.fillHeight: true
                 onSelected: {
-                    locDate = getVal();
+                    data.locDate = getVal();
+                    data.targetObject.date = mergeDateAndTime();
                 }
             }
 
@@ -173,8 +163,9 @@ Dialog{
                 Layout.fillHeight: true
                 onSelected: {
                    var tempVal = getVal();
-                   locTime.setHours(tempVal.getHours());
-                   locTime.setMinutes(tempVal.getMinutes());
+                   data.locTime.setHours(tempVal.getHours());
+                   data.locTime.setMinutes(tempVal.getMinutes());
+                   data.targetObject.date = mergeDateAndTime();
                 }
             }
 
@@ -192,8 +183,10 @@ Dialog{
                 Layout.preferredWidth: 300
                 Layout.fillHeight: true
                 onChanged: {
-                    var tempVal = getVal();
-                    locSubject = tempVal;
+                    console.log(getVal());
+                    console.log(data.targetObject);
+                    var tempSubj = getVal();
+                    data.targetObject.subject = tempSubj;
                 }
             }
 
@@ -208,7 +201,7 @@ Dialog{
                 Layout.preferredWidth: 300
                 model: [0.5, 1, 1.5]
                 onActivated: {
-                    targetObject.longs = currentText;
+                    data.targetObject.longs = currentText;
                 }
             }
         }
@@ -228,12 +221,7 @@ Dialog{
                 text: qsTr("Ok")
                 width: 80
                 onClicked: {
-                    if(isNew){
-                        save()
-                    }else
-                    {
-                        simpleSave();
-                    }
+                    save();
                     close()
                 }
             }
@@ -260,62 +248,13 @@ Dialog{
     //Эта ветвь при добавлении нового элемента
     //При сохранении локальные переменные переносятся в объект
     //Можно использовать сам объект для хранения локальных данных, но структура не совсем совпадает
-    function simpleSave(){
-        console.log(locSubject.ID);
-        targetObject.date = mergeDateAndTime();
-        targetObject.longs = longs.currentText;
-        targetObject.subject = locSubject;
-        targetObject.save();
+    function save(){
+        //console.log(locSubject.ID);
+        //data.targetObject.date = mergeDateAndTime();
+        //data.targetObject.longs = longs.currentText;
+        //data.targetObject.subject = data.locSubject;
+        data.targetObject.save();
+        LessonsModel.updateModel();
     }
-
-    function save()
-    {
-        console.log("save new lesson");
-        LessonsModel.add(locDate.toLocaleString(Qt.locale(), "dd.MM.yyyy hh:mm"), subjectID.text, longs.text)
-        LessonsModel.updateModel()
-    }
-
-    Dialog{
-        id: listSubjectsForChoose
-        width: 480
-        height: 640
-        modality: Qt.ApplicationModal
-        standardButtons: StandardButton.Ok | StandardButton.Cancel
-
-        function getChoosen(){
-            return listSubjects.getChoosen();
-        }
-        //Нужно унифицировать. Вид общий разная только модель и бланк редактор.
-        //В форме выбора бланк редактор можно опустить
-        ListForChoosen{
-            //var component = Qt.createComponent("EditStudent.qml");
-            //var obj = component.createObject(parent);
-            shownModel: SubjectsModel
-            id: listSubjects
-            anchors.fill: parent
-            Component.onCompleted: {
-                var component = Qt.createComponent("EditSubject.qml");
-                var obj = component.createObject(parent);
-                editBlank = obj;
-            }
-            onSelected: {
-                listSubjectsForChoose.accept();
-            }
-        }
-
-        onVisibleChanged: {
-            SubjectsModel.updateModel()
-        }
-
-        onAccepted: {
-            //Могу возвращать сразу объект
-            //var locIndex = listSubjects.choosenElement;
-            //var locSubjID = SubjectsModel.getId(locIndex);
-            locSubject = listSubjects.choosenElement;//SubjectsModel.getSubjectByID(locSubjID);
-            subjectID.text = locSubject.ID;
-            subjectName.text = locSubject.getFullName();
-        }
-    }
-
 }
 

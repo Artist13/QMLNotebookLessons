@@ -70,11 +70,6 @@ Item {
         ListForChoosen{
             //var component = Qt.createComponent("EditStudent.qml");
             //var obj = component.createObject(parent);
-            shownModel: mainObject.shownModel
-            editBlank: mainObject.blank
-            canAdd: mainObject.canAdd
-            canEdit: mainObject.canEdit
-            canRemove: mainObject.canRemove
             id: listElements
             anchors.fill: parent
 //            Component.onCompleted: {
