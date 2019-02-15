@@ -102,7 +102,7 @@ Dialog{
     //Для реализации работы с id и ухода от привязки к конкретной модели добавил новые методы и перебросил вызовы в них
     function editEntry(row)
     {
-        targetIndex = row
+        data.targetIndex = row
         if(row === -1){
             editBylessonId(-1);
         }
@@ -205,31 +205,35 @@ Dialog{
         Rectangle{
             id: bottomButtons
             color: form.baseBGColor
-            height: 40
+            height: 50
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
 
-            Button{
-                anchors.right: buttonCancel.left
-                anchors.margins: 5
-                id: buttonOk
-                text: qsTr("Ok")
-                width: 80
-                onClicked: {
-                    save();
-                    close()
-                }
-            }
-
-            Button{
+            RowLayout{
+                anchors.bottom: parent.bottom
+                //anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.margins: 5
-                id: buttonCancel
-                text: qsTr("Cancel")
-                width: 80
-                onClicked: {
-                    close()
+                spacing:  10
+
+                Button{
+                    id: buttonOk
+                    text: qsTr("Ok")
+                    Layout.preferredWidth: 80
+                    onClicked: {
+                        save();
+                        close()
+                    }
+                }
+
+                Button{
+                    id: buttonCancel
+                    text: qsTr("Cancel")
+                    Layout.preferredWidth: 80
+                    onClicked: {
+                        close()
+                    }
                 }
             }
         }
@@ -241,14 +245,8 @@ Dialog{
             //LessonMapper.addMapping(longs, (0x100 + 4), "text")
         }
     }
-    //Эта ветвь при добавлении нового элемента
-    //При сохранении локальные переменные переносятся в объект
-    //Можно использовать сам объект для хранения локальных данных, но структура не совсем совпадает
+    //Сохрпнение внесенных изменений
     function save(){
-        //console.log(locSubject.ID);
-        //data.targetObject.date = mergeDateAndTime();
-        //data.targetObject.longs = longs.currentText;
-        //data.targetObject.subject = data.locSubject;
         data.targetObject.save();
         LessonsModel.updateModel();
     }

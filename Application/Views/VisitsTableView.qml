@@ -30,18 +30,6 @@ Item {
                 obj.editEntry(-1)
             }
         }
-
-        Button{
-            id: closeTable
-            text: qsTr("Close")
-            width: 150
-            Layout.fillHeight: true
-            Layout.alignment: Qt.AlignRight
-
-            onClicked: {
-                mainFrame.sourceComponent = defaultElement
-            }
-        }
     }
 
     TableView{

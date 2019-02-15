@@ -165,15 +165,10 @@ Dialog{
 
             RowLayout{
                 anchors.bottom: parent.bottom
-                anchors.left: parent.left
+                //anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.margins: 5
                 spacing:  10
-
-                Rectangle{
-                    Layout.fillWidth: true
-                    color: "#eeeeee"
-                }
 
                 Button{
                     id: buttonOk

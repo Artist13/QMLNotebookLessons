@@ -75,21 +75,10 @@ Dialog{
             columns: 3
 
             BaseText {
-                text: qsTr("Person ID")
+                text: qsTr("Человек")
                 Layout.fillWidth: true
             }
 
-//            TextField{
-//                id: personID
-//                visible: false
-//                //Layout.preferredWidth: 200
-//            }
-
-//            TextField{
-//                id: personName
-//                readOnly: true
-//                Layout.preferredWidth: 200
-//            }
             ChoosenField{
                 id: person
                 innerList{
@@ -104,26 +93,10 @@ Dialog{
                 }
             }
 
-//            Button{
-//                id: choosePerson
-//                Layout.preferredWidth: 90
-//                text: qsTr("Выбрать")
-
-//                onClicked: {
-//                    listforChoose.open();
-//                }
-//            }
-
             BaseText {
-                text: qsTr("Class Number")
+                text: qsTr("Класс")
                 Layout.fillWidth: true
             }
-
-//            TextField{
-//                id: classNum
-//                Layout.preferredWidth: 300
-//                Layout.columnSpan: 2
-//            }
 
             ComboBox{
                 id: classNum
@@ -136,7 +109,7 @@ Dialog{
             }
 
             BaseText {
-                text: qsTr("Subject")
+                text: qsTr("Предмет")
                 Layout.fillWidth: true
             }
 
@@ -153,31 +126,6 @@ Dialog{
                     data.targetObject.subject = tempSubj;
                 }
             }
-
-//            TextField{
-//                id: subjectID
-//                visible: false
-//                Layout.preferredWidth: 300
-//                Layout.columnSpan: 2
-//            }
-
-//            TextField{
-//                id: subjectName
-//                readOnly: true
-//                Layout.preferredWidth: 200
-//            }
-
-//            Button{
-//                id: chooseSubject
-//                Layout.preferredWidth: 90
-//                text: qsTr("Выбрать")
-
-//                onClicked: {
-//                    listForChoosenSubj.open();
-//                }
-//            }
-
-
         }
 
         Rectangle{
@@ -189,35 +137,10 @@ Dialog{
 
             RowLayout{
                 anchors.bottom: parent.bottom
-                anchors.left: parent.left
+                //anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.margins: 5
                 spacing:  10
-
-                Button{
-                    id: buttonPrevios
-                    text: qsTr("Prev")
-                    Layout.preferredWidth: 80
-
-                    onClicked: {
-                        StudentMapper.toPrevious()
-                    }
-                }
-
-                Button{
-                    id: buttonNext
-                    text: qsTr("Next")
-                    Layout.preferredWidth: 80
-
-                    onClicked: {
-                        StudentMapper.toNext()
-                    }
-                }
-
-                Rectangle{
-                    Layout.fillWidth: true
-                    color: "#eeeeee"
-                }
 
                 Button{
                     id: buttonOk
@@ -256,15 +179,7 @@ Dialog{
     //Эта ветвь при добавлении нового элемента
     function save()
     {
-        //console.log("save new");
-        //database.insertIntoTable(nameField.text, secondNameField.text, thirdNameField.text, phoneField.text, birthField.text);
-        //StudentsModel.add(personID.text, classNum.text, subjectID.text)
         data.targetObject.save();
         StudentsModel.updateModel();
-    }
-    function updateElement(_index){
-        console.log("save old")
-        StudentsModel.updateElement(targetIndex, personID.text, classNum.text, subjectID.text)
-        StudentsModel.updateModel()
     }
 }

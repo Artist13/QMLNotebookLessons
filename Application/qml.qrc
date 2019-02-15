@@ -7,7 +7,6 @@
         <file>Views/EditStudent.qml</file>
         <file>Views/EditSubject.qml</file>
         <file>Views/EditVisit.qml</file>
-        <file>Views/forTestCreation.qml</file>
         <file>Views/LessonsTableView.qml</file>
         <file>Views/PersonsTableView.qml</file>
         <file>Views/StudentsTableView.qml</file>
