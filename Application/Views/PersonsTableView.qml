@@ -90,6 +90,14 @@ Item {
 
         model: PersonsModel
 
+        itemDelegate: Item {
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                color: "black";
+                text: styleData.value
+            }
+        }
+
         rowDelegate: Rectangle{
             anchors.fill: parent
             color: styleData.selected ? "skyblue" : (styleData.alternate ? 'whitesmoke' : 'white');
@@ -114,7 +122,7 @@ Item {
                 onDoubleClicked: {
                     var component = Qt.createComponent("EditPerson.qml");
                     var obj = component.createObject(parent);
-                    obj.editEntry(styleData.row)
+                    obj.editEntry(styleData.row);
                 }
 
             }

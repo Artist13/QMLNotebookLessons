@@ -40,7 +40,7 @@ public:
 
     QString nameForList() const;
 
-    void Save();
+    Q_INVOKABLE void save();
 signals:
     void IDChanged();
     void classNumChanged();
@@ -90,6 +90,8 @@ public Q_SLOTS:
     QString getStringViewById(const int id);
 
     QList<QObject*> getObjectsModel();
+    QObject* getStudentById(const int ID);
+    QObject* newStudent();
 };
 
 #endif // STUDENT_H

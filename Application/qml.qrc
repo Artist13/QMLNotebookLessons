@@ -8,16 +8,10 @@
         <file>Views/EditSubject.qml</file>
         <file>Views/EditVisit.qml</file>
         <file>Views/forTestCreation.qml</file>
-        <file>Views/LessonsListView.qml</file>
         <file>Views/LessonsTableView.qml</file>
-        <file>Views/PersonsListView.qml</file>
         <file>Views/PersonsTableView.qml</file>
-        <file>Views/StudentsListView.qml</file>
         <file>Views/StudentsTableView.qml</file>
-        <file>Views/SubjectDelegate.qml</file>
-        <file>Views/SubjectListView.qml</file>
         <file>Views/SubjectsTableView.qml</file>
-        <file>Views/VisitsListView.qml</file>
         <file>Views/VisitsTableView.qml</file>
         <file>Views/TopBar.qml</file>
         <file>Files/eventindicator.png</file>
@@ -30,5 +24,6 @@
         <file>Helpers/DateField.qml</file>
         <file>Helpers/ListForChoosen.qml</file>
         <file>Helpers/ChoosenField.qml</file>
+        <file>Helpers/EditerStyle.qml</file>
     </qresource>
 </RCC>

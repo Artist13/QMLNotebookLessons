@@ -10,7 +10,7 @@ Item {
     function openLessonEditor(row){
         var component = Qt.createComponent("EditLesson.qml");
         var obj = component.createObject(parent);
-        obj.editEntry(row)
+        obj.editEntry(row);
     }
 
     RowLayout{
@@ -33,18 +33,6 @@ Item {
                 openLessonEditor(-1)
             }
         }
-
-        Button{
-            id: closeTable
-            text: qsTr("Close")
-            width: 150
-            Layout.fillHeight: true
-            Layout.alignment: Qt.AlignRight
-
-            onClicked: {
-                mainFrame.sourceComponent = defaultElement
-            }
-        }
     }
 
     TableView{
@@ -62,14 +50,14 @@ Item {
 
         TableViewColumn{
             role: "lessonDate"
-            title: "Date"
+            title: "Дата"
             //width: parent.width / 4 - 3
 
         }
 
         TableViewColumn{
             role: "subjectName"
-            title: "Subject"
+            title: "Предмет"
             //width: parent.width / 4 - 3
         }
 
@@ -84,7 +72,6 @@ Item {
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 color: "black";
-                //elide: styleData.elideMode
                 text: styleData.value
             }
         }

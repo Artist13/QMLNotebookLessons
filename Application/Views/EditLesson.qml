@@ -54,10 +54,8 @@ Dialog{
     }
 
     function setEmptySubject(){
-        //data.locSubject = Object.create(null);
         subject.setVal(Object.create(null));
-        //subjectID.text = "";
-        //subjectName.text = "";
+        console.log(subject.getVal().name);
     }
 
     function mergeDateAndTime(){
@@ -197,7 +195,7 @@ Dialog{
                 id: longs
                 Layout.columnSpan: 2
                 Layout.preferredWidth: 300
-                model: [0.5, 1, 1.5]
+                model: [0.5, 1, 1.5, 2, 2.5, 3]
                 onActivated: {
                     data.targetObject.longs = currentText;
                 }

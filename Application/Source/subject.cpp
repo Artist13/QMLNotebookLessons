@@ -46,10 +46,10 @@ Subject *Subject::getSubject(const int &ID)
     //Нужна проверка на уникальность записи
     query.first();
     if(query.isValid()){
-        Subject* locSubj = new Subject();
-        locSubj->setID(ID);
-        locSubj->setName(query.value(FIELD_NAME).toString());
-        locSubj->setClassNum(query.value(FIELD_SUBJCLASS).toInt());
+        Subject* locSubj = new Subject(ID);
+//        locSubj->setID(ID);
+//        locSubj->setName(query.value(FIELD_NAME).toString());
+//        locSubj->setClassNum(query.value(FIELD_SUBJCLASS).toInt());
         return locSubj;
         //qDebug() << _ID << "|" << _Name << "|" << _ClassNum;
     }else{

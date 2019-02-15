@@ -3,6 +3,8 @@
 Student::Student(QObject *parent) : CustomRecord(parent)
 {
     _ID = -1;
+    _person = nullptr;
+    _subject = nullptr;
 }
 
 Student::Student(Person *, int, QString) : CustomRecord ()
@@ -28,21 +30,18 @@ Student::Student(const int &ID) : CustomRecord ()
 
 Student *Student::getStudent(const int ID)
 {
-//    QSqlQuery query;
-//    query.prepare("SELECT * FROM " TABLE_STUDENTS " WHERE " FIELD_ID " =  :ID");
-//    query.bindValue(":ID", ID);
-//    query.exec();
-//    query.first();
-//    if(query.isValid()){
-//        Subject* locSubj = new Subject();
-//        locSubj->setID(ID);
-//        locSubj->setName(query.value(FIELD_NAME).toString());
-//        locSubj->setClassNum(query.value(FIELD_SUBJCLASS).toInt());
-//        return locSubj;
-//        //qDebug() << _ID << "|" << _Name << "|" << _ClassNum;
-//    }else{
-//        return nullptr;
-//    }
+    QSqlQuery query;
+    query.prepare("SELECT * FROM " TABLE_STUDENTS " WHERE " FIELD_ID " =  :ID");
+    query.bindValue(":ID", ID);
+    query.exec();
+    query.first();
+    if(query.isValid()){
+        Student* locSubj = new Student(ID);
+        return locSubj;
+        //qDebug() << _ID << "|" << _Name << "|" << _ClassNum;
+    }else{
+        return nullptr;
+    }
 }
 
 Student::~Student()
@@ -111,7 +110,7 @@ QString Student::nameForList() const
     return name();
 }
 
-void Student::Save()
+void Student::save()
 {
     if(_ID == -1)
         CreateNewRecord();
@@ -167,7 +166,7 @@ void StudentSQL::addElement(const int _person, const int _class, const QString _
     tempStudent->setPerson(Person::getPerson(_person));
     tempStudent->setClassNum(_class);
     tempStudent->setSubject(Subject::getSubject(_subject.toInt()));
-    tempStudent->Save();
+    tempStudent->save();
 }
 
 QVariant StudentSQL::data(const QModelIndex &index, int role) const
@@ -254,7 +253,7 @@ void StudentSQL::updateElement(const int row, const int _person, const int _clas
     tempStudent->setPerson(Person::getPerson(_person));
     tempStudent->setClassNum(_class);
     tempStudent->setSubject(Subject::getSubject(_subject.toInt()));
-    tempStudent->Save();
+    tempStudent->save();
 }
 
 QString StudentSQL::getStringView(const int row)
@@ -284,5 +283,15 @@ QList<QObject *> StudentSQL::getObjectsModel()
         students.append(new  Student(query.value(FIELD_ID).toInt()));
     }
     return students;
+}
+
+QObject *StudentSQL::getStudentById(const int ID)
+{
+    return Student::getStudent(ID);
+}
+
+QObject *StudentSQL::newStudent()
+{
+    return new Student();
 }
 

@@ -69,6 +69,7 @@ ApplicationWindow {
                 anchors.fill: parent
             }
         }
+
 //        Tab {
 //            title: "Green"
 //            Rectangle { color: "green" }

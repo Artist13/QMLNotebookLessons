@@ -79,6 +79,14 @@ Item {
 
         model: StudentsModel
 
+        itemDelegate: Item {
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                color: "black";
+                text: styleData.value
+            }
+        }
+
         rowDelegate: Rectangle{
             anchors.fill: parent
             color: styleData.selected ? "skyblue" : (styleData.alternate ? 'whitesmoke' : 'white');

@@ -12,6 +12,7 @@ import QtQuick.Window 2.2
 //Возможности для редактирования и добавления должны быть доступны в соответствии с установленными флагами
 
 Item {
+    id: topObject
     property bool canAdd : false
     property bool canEdit: false //not in use
     property bool canRemove: false
@@ -34,7 +35,7 @@ Item {
         anchors.right: parent.right
         anchors.margins: 5
 
-        height: 35
+        height: topObject.canAdd ? 35 : 0
         //Это бланк только для выбора тут добавлять не надо. Вовсяком случае пока
         Button{
             id: addBut
@@ -52,35 +53,35 @@ Item {
     }
     //Это кажется для подсветки, которая некорректно работает
     //Нужно поправить
-    Component{
-        id: personDelegate
-        Rectangle{
-            anchors.fill: parent
-            height: 20
-            color: ListView.isCurrentItem ? "skyblue" : "white"
+//    Component{
+//        id: personDelegate
+//        Rectangle{
+//            anchors.fill: parent
+//            height: 20
+//            color: ListView.isCurrentItem ? "skyblue" : "white"
 
-        }
-    }
+//        }
+//    }
 
     ListView{
         id: listView
         anchors.top: row.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 100
+        anchors.bottom: parent.bottom
         anchors.margins: 5
 
         model: shownModel.getObjectsModel()
 
-        delegate: Rectangle{
+        delegate: Item{
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 5
-            color: ListView.isCurrentItem ? "skyblue" : "white"
+            //color: ListView.isCurrentItem ? "skyblue" : "white"
             height: 20
             Text{
                 anchors.fill: parent
-                //color: "blue"
+                color: "white"
                 id: someText
                 //Объекты представленные в этом списке должны реализовывать CustomRecord
                 text: qsTr(modelData.nameForList)
@@ -114,14 +115,31 @@ Item {
                         selected();
                     }
                 }
+                hoverEnabled: true
+                onEntered: {
+                    parent.color = "red"
+                }
+                onExited: {
+                    parent.color = ListView.isCurrentItem ? "skyblue" : "white"
+                }
 
             }
         }
-        Component.onCompleted: {
-            choosenElement = listView.model[listView.currentIndex];
-        }
+//        Component.onCompleted: {
+//            choosenElement = listView.model[listView.currentIndex];
+//        }
 
-        highlight: Rectangle {color: "lightsteelblue"; radius: 5}
+        highlight: Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 20
+            //color: "#FFFF88"
+            y: listView.currentItem.y;
+            Behavior on y { SpringAnimation { spring: 2; damping: 0.1 } }
+            color: "lightsteelblue"
+            radius: 5
+        }
+        highlightFollowsCurrentItem: false
 
     }
 }
