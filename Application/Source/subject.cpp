@@ -103,7 +103,7 @@ void Subject::setClassNum(const int &classNum)
     emit classNumChanged();
 }
 
-void Subject::Save()
+void Subject::save()
 {
     if (_ID == -1)
         CreateNewRecord();
@@ -162,7 +162,12 @@ void Subject::UpdateRecord()
 
 QString Subject::ClassNumString() const
 {
-    return QString::number(_ClassNum) + " кл.";
+    if(_ClassNum != 0){
+        return QString::number(_ClassNum) + " кл.";
+    }
+    else {
+        return "";
+    }
 }
 
 SubjectModel::SubjectModel(QObject* parent) : QSqlQueryModel(parent)
@@ -184,7 +189,7 @@ void SubjectModel::addElement(QVariantList data)
     Subject* tempSubject = new Subject();
     tempSubject->setName(data[0].toString());
     tempSubject->setClassNum((data[1].toInt()));
-    tempSubject->Save();
+    tempSubject->save();
 }
 
 QHash<int, QByteArray> SubjectModel::roleNames() const
@@ -249,7 +254,7 @@ void SubjectModel::updateElement(const int row, const QString _name, const QStri
     Subject* tempSubj = new Subject(locID);
     tempSubj->setName(_name);
     tempSubj->setClassNum(_classNum.toInt());
-    tempSubj->Save();
+    tempSubj->save();
 }
 
 QString SubjectModel::getNameByID(const int ID) const
@@ -277,4 +282,9 @@ QList<QObject *> SubjectModel::getObjectsModel()
         subjects.append(new Subject(query.value(FIELD_ID).toInt()));
     }
     return subjects;
+}
+
+QObject *SubjectModel::newSubject()
+{
+    return new Subject();
 }

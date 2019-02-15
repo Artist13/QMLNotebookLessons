@@ -17,12 +17,15 @@ Dialog{
 
     function editById(id){
         targetIndex = id;
-        targetObject = SubjectsModel.getSubjectByID(id);
+        console.log(id);
         if(id == -1){
             isNew = true;
             nameBl = "New subject";
+            targetObject = SubjectsModel.newSubject();
             //SubjectMapper.newData();
         }else{
+
+            targetObject = SubjectsModel.getSubjectByID(id);
             isNew = false;
             nameBl = "Edit subject";
             subjectName.text = targetObject.name;
@@ -39,12 +42,14 @@ Dialog{
             isNew = true;
             nameBl = "New subject"
             SubjectMapper.newData();
+            editById(-1);
         }
         else{
             isNew = false;
             //console.log(targetIndex)
             nameBl = "Edit subject"
             SubjectMapper.updateData(row)
+            editById(SubjectsModel.getId(row));
             //subjectName
         }
         open()
@@ -87,7 +92,7 @@ Dialog{
             ComboBox{
                 id: classNum
                 Layout.preferredWidth: 200
-                model: [11, 9]
+                model: ['11', '9', '']
 //                onActivated: {
 //                    targetObject.classNum = currentText;
 //                }
@@ -151,9 +156,10 @@ Dialog{
     function updateElement(_index){
         console.log("save old")
         //SubjectsModel.updateElement(targetIndex, subjectName.text, classNum.text)
+        console.log(targetObject.name);
         targetObject.name = subjectName.text;
         targetObject.classNum = classNum.currentText;
-        targetObject.Save();
+        targetObject.save();
         SubjectsModel.updateModel()
     }
 }

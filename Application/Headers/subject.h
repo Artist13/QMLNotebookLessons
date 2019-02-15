@@ -34,7 +34,7 @@ public:
     int classNum() const;
     void setClassNum(const int &classNum);
 
-    Q_INVOKABLE void Save();
+    Q_INVOKABLE void save();
     int getID();
 
     Q_INVOKABLE QString getFullName() const;
@@ -92,6 +92,7 @@ public slots:
     QString getNameByID(const int ID) const;
     QObject* getSubjectByID(const int ID);
     QList<QObject*> getObjectsModel();
+    QObject* newSubject();
 };
 
 #endif // SUBJECT_H

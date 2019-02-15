@@ -289,7 +289,7 @@ QList<QObject *> LessonModel::lessonsList(const QDate &date)
     }
     QList<QObject*> lessons;
     while(query.next()){
-        qDebug() << "Заменить ручное создание на стандартное!!!";
+        //qDebug() << "Заменить ручное создание на стандартное!!!";
         Lesson* lesson = new Lesson(this);
         lesson->setID(query.value(FIELD_ID).toInt());
         QDateTime locDateTime = query.value(FIELD_DATE).toDateTime();
